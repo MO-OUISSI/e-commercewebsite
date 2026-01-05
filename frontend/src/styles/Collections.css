@@ -1,0 +1,80 @@
+.collections {
+    padding: 4rem 1.5rem;
+    background-color: #ffffff;
+}
+
+@media (min-width: 768px) {
+    .collections {
+        padding: 6rem 1.5rem;
+    }
+}
+
+.collections-title {
+    font-size: 2.5rem;
+    font-weight: 400;
+    margin-bottom: 3rem;
+    letter-spacing: -0.02em;
+}
+
+.collections-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .collections-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .collections-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.collection-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    text-decoration: none;
+}
+
+.collection-card-wrapper:hover {
+    transform: translateY(-5px);
+}
+
+.collection-card-grey {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background-color: #f3f3f3;
+    /* Light grey placeholder */
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.collection-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.25rem;
+}
+
+.collection-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.collection-arrow {
+    color: var(--text-primary);
+    transition: transform 0.2s ease;
+}
+
+.collection-card-wrapper:hover .collection-arrow {
+    transform: translateX(4px);
+}

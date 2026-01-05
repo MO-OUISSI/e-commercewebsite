@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Alex+Brush&family=Anton&family=Cairo:wght@200..1000&family=Exo+2:ital,wght@0,100..900;1,100..900&family=Russo+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --bg-white: #ffffff;
+  --text-primary: #171717;
+  /* neutral-900 */
+  --text-secondary: #737373;
+  /* neutral-500 */
+  --stone-50: #fafaf9;
+  --stone-100: #f5f5f4;
+  --stone-200: #e7e5e4;
+  --stone-400: #a8a29e;
+  --neutral-200: #e5e5e5;
+  --neutral-400: #a3a3a3;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
+  --black: #000000;
+  --white-80: rgba(255, 255, 255, 0.8);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-white);
+  color: var(--text-primary);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+.max-w-7xl {
+  max-width: 80rem;
+  margin: 0 auto;
+}
+
+.max-w-88rem {
+  max-width: 88rem;
+  margin: 0 auto;
+}
+
+selection {
+  background-color: var(--stone-200);
+  color: var(--black);
+}
