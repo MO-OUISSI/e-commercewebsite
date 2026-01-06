@@ -1,7 +1,9 @@
 const express = require('express');
 const connection = require('./config/connexionDB');
-const cors = require('cors');
 const path = require('path');
+const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 // Import routes
@@ -17,12 +19,43 @@ const errorHandler = require('./middlewares/errorHandler');
 // Import admin initialization
 const initializeAdmin = require('./config/initAdmin');
 
+// Verify critical environment variables
+if (!process.env.JWT_SECRET) {
+  console.error('FATAL ERROR: JWT_SECRET is not defined.');
+  process.exit(1);
+}
+if (!process.env.MONGODB_URI) {
+  console.error('FATAL ERROR: MONGODB_URI is not defined.');
+  process.exit(1);
+}
+
 const app = express();
 
-// Middleware
+// Standard Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+
+// Security Middleware
+app.use(helmet());
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: {
+    success: false,
+    message: 'Too many requests from this IP, please try again after 15 minutes'
+  }
+});
+app.use('/auth', limiter); // Apply stricter limit to auth routes
+app.use('/orders', limiter); // Apply limiter to order creation
+
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 
 // Serve static files (uploaded images)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
