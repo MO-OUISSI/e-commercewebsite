@@ -1,0 +1,241 @@
+/* CollectionForm.css */
+.collection-form-content {
+    max-width: 896px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.form-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.back-btn {
+    padding: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--zinc-200);
+    color: var(--zinc-600);
+    transition: background-color 0.2s;
+}
+
+.back-btn:hover {
+    background-color: var(--zinc-50);
+}
+
+.form-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.25rem;
+    letter-spacing: -0.025em;
+    color: #000;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+@media (min-width: 1024px) {
+    .form-grid {
+        grid-template-columns: 1fr 2fr;
+    }
+}
+
+.upload-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.upload-card {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 2rem;
+    border: 2px dashed var(--zinc-200);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.upload-card:hover {
+    background-color: var(--zinc-50);
+    border-color: var(--zinc-400);
+}
+
+.upload-icon-wrapper {
+    width: 64px;
+    height: 64px;
+    background-color: var(--zinc-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    color: var(--zinc-400);
+}
+
+.upload-text {
+    font-weight: 500;
+    color: var(--zinc-900);
+}
+
+.upload-subtext {
+    font-size: 0.75rem;
+    color: var(--zinc-500);
+    margin-top: 8px;
+}
+
+.fields-section {
+    background-color: #fff;
+    padding: 32px;
+    border-radius: 2rem;
+    border: 1px solid var(--zinc-100);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.field-group label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--zinc-500);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+.form-input {
+    width: 100%;
+    background-color: var(--zinc-50);
+    border: none;
+    border-bottom: 1px solid var(--zinc-200);
+    padding: 12px;
+    outline: none;
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--zinc-900);
+    transition: border-color 0.2s;
+}
+
+.form-input:focus {
+    border-bottom-color: #000;
+}
+
+.form-actions {
+    padding-top: 24px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.cancel-btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--zinc-500);
+    transition: background-color 0.2s;
+}
+
+.cancel-btn:hover {
+    background-color: var(--zinc-50);
+}
+
+.submit-btn {
+    background-color: #000;
+    color: #fff;
+    padding: 12px 32px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: var(--zinc-800);
+}
+
+.edit-image-container {
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 2rem;
+    border: 1px solid var(--zinc-100);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.edit-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1.5rem;
+}
+
+.image-overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 1.5rem;
+    transition: opacity 0.2s;
+}
+
+.edit-image-container:hover .image-overlay {
+    opacity: 1;
+}
+
+.overlay-text {
+    color: #fff;
+    font-weight: 500;
+}
+
+.form-actions-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+}
+
+.delete-btn {
+    color: #ef4444;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.delete-btn:hover {
+    color: #b91c1c;
+}
+
+.form-actions-btns {
+    display: flex;
+    gap: 12px;
+}

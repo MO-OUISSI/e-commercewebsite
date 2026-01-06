@@ -1,0 +1,453 @@
+/* Dashboard.css - Enhanced Professional UI */
+
+.dashboard-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+/* Info Bar & Quick Actions */
+.dashboard-info-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 8px 0;
+}
+
+@media (max-width: 640px) {
+    .dashboard-info-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+}
+
+.welcome-text .greeting {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--zinc-900);
+    margin-bottom: 4px;
+}
+
+.welcome-text .subtitle {
+    font-size: 0.9375rem;
+    color: var(--zinc-500);
+}
+
+.quick-actions-row {
+    display: none;
+    gap: 12px;
+}
+
+@media (min-width: 768px) {
+    .quick-actions-row {
+        display: flex;
+    }
+}
+
+.action-pill-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background-color: #fff;
+    border: 1px solid var(--zinc-200);
+    border-radius: 9999px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--zinc-700);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-pill-btn:hover {
+    background-color: var(--zinc-50);
+    border-color: var(--zinc-300);
+}
+
+.action-pill-btn.dark {
+    background-color: var(--zinc-900);
+    border-color: var(--zinc-900);
+    color: #fff;
+}
+
+.action-pill-btn.dark:hover {
+    background-color: #000;
+}
+
+/* Stats Grid - Luxury Style */
+.stats-grid-luxury {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+}
+
+@media (min-width: 640px) {
+    .stats-grid-luxury {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1280px) {
+    .stats-grid-luxury {
+        grid-template-columns: repeat(5, 1fr);
+    }
+}
+
+.stat-card-premium {
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 1.5rem;
+    border: 1px solid var(--zinc-100);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.04);
+}
+
+.stat-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.stat-icon-bg {
+    width: 44px;
+    height: 44px;
+    background-color: var(--zinc-50);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--zinc-900);
+}
+
+.stat-card-premium.blue .stat-icon-bg {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.stat-card-premium.gold .stat-icon-bg {
+    background-color: #fffbeb;
+    color: #d97706;
+}
+
+.stat-card-premium.red .stat-icon-bg {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.trend-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+.trend-badge.up {
+    background-color: #f0fdf4;
+    color: #16a34a;
+}
+
+.trend-badge.down {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.stat-value-big {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--zinc-900);
+    margin-bottom: 2px;
+}
+
+.stat-label-refined {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--zinc-400);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Layout Sections */
+.dashboard-grid-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+@media (min-width: 1024px) {
+    .dashboard-grid-layout {
+        grid-template-columns: 1.6fr 1fr;
+    }
+}
+
+.dashboard-card {
+    background-color: #fff;
+    border-radius: 2rem;
+    border: 1px solid var(--zinc-100);
+    padding: 32px;
+}
+
+@media (max-width: 768px) {
+    .dashboard-card {
+        padding: 20px;
+        border-radius: 1.5rem;
+    }
+}
+
+.card-header-clean {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.card-title-serif {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--zinc-900);
+}
+
+/* Mockup Chart */
+.mockup-chart-container {
+    height: 200px;
+    display: flex;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 20px;
+}
+
+.chart-y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--zinc-400);
+    padding-bottom: 32px;
+}
+
+.chart-visual {
+    flex: 1;
+    position: relative;
+    border-bottom: 1px solid var(--zinc-100);
+}
+
+.wave-container {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 10px;
+}
+
+.wave-point {
+    width: 8px;
+    background-color: var(--zinc-900);
+    border-radius: 4px 4px 0 0;
+    opacity: 0.1;
+    transition: opacity 0.3s;
+}
+
+.wave-point:hover {
+    opacity: 1;
+    background-color: var(--lumiere-gold);
+}
+
+.chart-labels {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 45px;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: var(--zinc-400);
+}
+
+@media (max-width: 640px) {
+    .chart-labels {
+        padding-left: 20px;
+        font-size: 0.65rem;
+    }
+}
+
+/* Compact Table */
+.compact-table-wrapper {
+    overflow-x: auto;
+}
+
+.compact-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.compact-table th {
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--zinc-400);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--zinc-50);
+}
+
+.compact-table td {
+    padding: 16px;
+    font-size: 0.875rem;
+    border-bottom: 1px solid var(--zinc-50);
+}
+
+.id-cell-bold {
+    font-weight: 600;
+    color: var(--zinc-900);
+}
+
+.date-cell-light {
+    color: var(--zinc-400);
+    font-size: 0.8125rem;
+}
+
+.status-pill {
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-pill.processing {
+    background-color: #fffbeb;
+    color: #d97706;
+}
+
+.status-pill.completed {
+    background-color: #f0fdf4;
+    color: #16a34a;
+}
+
+.status-pill.cancelled {
+    background-color: #fef2f2;
+    color: #dc2626;
+}
+
+.view-all-link {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--lumiere-gold);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+/* Top Selling Section */
+.wide-card {
+    margin-top: 8px;
+}
+
+.top-selling-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+@media (min-width: 768px) {
+    .top-selling-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.top-product-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background-color: var(--zinc-50);
+    border-radius: 1.25rem;
+}
+
+.product-rank {
+    width: 24px;
+    height: 24px;
+    background-color: var(--zinc-900);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.product-info-row {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.product-mini-img {
+    width: 48px;
+    height: 48px;
+    background-color: #ddd;
+    border-radius: 10px;
+}
+
+.product-p-name {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--zinc-900);
+}
+
+.product-p-meta {
+    font-size: 0.75rem;
+    color: var(--zinc-400);
+}
+
+.product-revenue-pill {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--zinc-900);
+}
+
+/* Footer */
+.dashboard-footer {
+    display: flex;
+    justify-content: space-between;
+    padding: 24px 0;
+    border-top: 1px solid var(--zinc-100);
+    margin-top: 20px;
+}
+
+@media (max-width: 640px) {
+    .dashboard-footer {
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        text-align: center;
+    }
+}
+
+.footer-left p {
+    font-size: 0.8125rem;
+    color: var(--zinc-400);
+}
+
+.footer-right {
+    display: flex;
+    gap: 24px;
+}
+
+.footer-right a {
+    font-size: 0.8125rem;
+    color: var(--zinc-400);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-right a:hover {
+    color: var(--zinc-900);
+}

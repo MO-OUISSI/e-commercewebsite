@@ -1,0 +1,116 @@
+/* Header.css */
+.header {
+    height: 80px;
+    /* h-20 */
+    background-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--zinc-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    /* px-8 */
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+@media (min-width: 768px) {
+    .header {
+        padding: 0 48px;
+        /* md:px-12 */
+    }
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    /* gap-4 */
+}
+
+.mobile-menu-btn {
+    display: block;
+    padding: 8px;
+    margin-left: -8px;
+    color: var(--zinc-500);
+    transition: color 0.2s;
+}
+
+@media (min-width: 768px) {
+    .mobile-menu-btn {
+        display: none;
+    }
+}
+
+.mobile-menu-btn:hover {
+    color: #000;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    /* gap-6 */
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    /* gap-3 */
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.user-profile:hover {
+    opacity: 0.8;
+}
+
+.user-info {
+    text-align: right;
+    display: none;
+}
+
+@media (min-width: 640px) {
+    .user-info {
+        display: block;
+    }
+}
+
+.user-name {
+    font-size: 0.875rem;
+    /* text-sm */
+    font-weight: 500;
+    color: #000;
+}
+
+.user-role {
+    font-size: 0.75rem;
+    /* text-xs */
+    color: var(--zinc-400);
+}
+
+.user-avatar {
+    width: 40px;
+    /* w-10 */
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--zinc-200);
+}
+
+.header-logout-btn {
+    color: var(--zinc-400);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.header-logout-btn:hover {
+    color: #ef4444;
+    background-color: #fef2f2;
+}

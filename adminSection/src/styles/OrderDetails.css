@@ -1,0 +1,342 @@
+/* OrderDetails.css - Refined for Lumière Premium Vibe */
+
+.order-details-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-bottom: 60px;
+}
+
+/* Header Section */
+.details-header-refined {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding: 0 8px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.back-btn-pill {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1px solid var(--zinc-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--zinc-900);
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.back-btn-pill:hover {
+    background-color: var(--zinc-900);
+    color: #fff;
+    border-color: var(--zinc-900);
+}
+
+.order-title-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.order-date-meta {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--lumiere-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+}
+
+.details-title-serif {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: #000;
+    margin: 0;
+}
+
+.status-badge-premium {
+    padding: 8px 20px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.status-badge-premium.processing {
+    background-color: var(--zinc-900);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced Layout */
+.details-layout-enhanced {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+@media (min-width: 1024px) {
+    .details-layout-enhanced {
+        grid-template-columns: 1.8fr 1fr;
+    }
+}
+
+.column-main,
+.column-side {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+/* Luxury Card Styles */
+.details-card-luxury {
+    background-color: #fff;
+    border-radius: 2.25rem;
+    border: 1px solid var(--zinc-100);
+    padding: 32px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+}
+
+.card-header-clean,
+.card-header-small {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.card-header-small {
+    justify-content: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.card-title-serif {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--zinc-900);
+}
+
+.card-title-sub {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--zinc-500);
+}
+
+.header-icon-gold {
+    color: var(--lumiere-gold);
+}
+
+.item-count-badge {
+    padding: 4px 12px;
+    background-color: var(--zinc-50);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--zinc-500);
+}
+
+/* Elegant Item List */
+.items-list-elegant {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 32px;
+}
+
+.order-item-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 16px;
+    background-color: var(--zinc-50);
+    border-radius: 1.5rem;
+    transition: transform 0.2s;
+}
+
+.order-item-row:hover {
+    transform: scale(1.01);
+}
+
+.item-image-container {
+    width: 80px;
+    height: 80px;
+    border-radius: 1rem;
+    overflow: hidden;
+    background-color: #fff;
+    border: 1px solid var(--zinc-100);
+}
+
+.item-img-premium {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-info-main {
+    flex: 1;
+}
+
+.item-name-bold {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--zinc-900);
+    margin-bottom: 4px;
+}
+
+.item-variant-sub {
+    font-size: 0.875rem;
+    color: var(--zinc-400);
+}
+
+.item-price-stack {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+}
+
+.item-price-unit {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--zinc-900);
+}
+
+.item-qty-sub {
+    font-size: 0.75rem;
+    color: var(--zinc-400);
+}
+
+/* Summary Refined */
+.order-summary-refined {
+    padding-top: 24px;
+    border-top: 1px solid var(--zinc-100);
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    color: var(--zinc-500);
+    margin-bottom: 12px;
+}
+
+.summary-divider {
+    height: 1px;
+    background-color: var(--zinc-100);
+    margin: 16px 0;
+}
+
+.summary-total-luxury {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.75rem;
+    color: var(--zinc-900);
+}
+
+/* Timeline Luxury */
+.timeline-luxury {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.timeline-step {
+    padding-left: 40px;
+    position: relative;
+    padding-bottom: 32px;
+    border-left: 1px solid var(--zinc-100);
+    margin-left: 20px;
+}
+
+.timeline-step:last-child {
+    border-left-color: transparent;
+    padding-bottom: 0;
+}
+
+.step-icon-wrapper {
+    position: absolute;
+    left: -21px;
+    top: 0;
+    width: 42px;
+    height: 42px;
+    background-color: var(--zinc-900);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 4px #fff;
+}
+
+.step-icon-wrapper.grey {
+    background-color: var(--zinc-50);
+    color: var(--zinc-300);
+}
+
+.step-body {
+    padding-top: 8px;
+}
+
+.step-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--zinc-900);
+    margin-bottom: 4px;
+}
+
+.step-title.pending {
+    color: var(--zinc-300);
+}
+
+.step-time {
+    font-size: 0.75rem;
+    color: var(--zinc-400);
+}
+
+/* Info Content Panels */
+.info-content-clean {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.primary-text {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--zinc-900);
+    margin-bottom: 4px;
+}
+
+.secondary-text {
+    font-size: 0.875rem;
+    color: var(--zinc-500);
+}
+
+.external-link-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--lumiere-gold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+}
+
+.external-link-btn:hover {
+    text-decoration: underline;
+}
