@@ -19,29 +19,59 @@ const productSchema = new mongoose.Schema({
     category: {
         type: String,
         required: [true, 'Product category is required'],
-        enum: ['dresses', 'sets', 'bags', 'accessories', 'other'],
+        trim: true,
         lowercase: true
     },
-    sizes: [
+    colors: [
         {
-            label: {
+            name: {
                 type: String,
-                required: [true, 'Size label is required']
+                required: [true, 'Color name is required']
             },
-            stock: {
-                type: Number,
-                required: [true, 'Stock quantity for this size is required'],
-                min: [0, 'Stock cannot be negative'],
-                default: 0
-            }
+            hexCode: {
+                type: String,
+                default: '#000000' // For visual indicators
+            },
+            imageUrl: {
+                type: String,
+                required: [true, 'Color-specific image URL is required']
+            },
+            sizes: [
+                {
+                    label: {
+                        type: String,
+                        required: [true, 'Size label is required']
+                    },
+                    stock: {
+                        type: Number,
+                        required: [true, 'Stock quantity for this variant is required'],
+                        min: [0, 'Stock cannot be negative'],
+                        default: 0
+                    }
+                }
+            ]
         }
     ],
     images: {
         type: [String],
         default: []
     },
-    // We removed the main stock field in favor of size-specific stock
-    // But we can add it back as a virtual if needed for filtering/displaying.
+    isFeatured: {
+        type: Boolean,
+        default: false
+    },
+    isNewProduct: { // Using isNewProduct to avoid conflict with mongoose's isNew
+        type: Boolean,
+        default: false
+    },
+    isOnSale: {
+        type: Boolean,
+        default: false
+    },
+    salePrice: {
+        type: Number,
+        min: [0, 'Sale price cannot be negative']
+    },
     isActive: {
         type: Boolean,
         default: true
@@ -64,7 +94,17 @@ productSchema.pre('save', function (next) {
 
 // Add a virtual field for total stock
 productSchema.virtual('totalStock').get(function () {
-    return this.sizes.reduce((total, s) => total + s.stock, 0);
+    return this.colors.reduce((total, color) => {
+        return total + color.sizes.reduce((sum, s) => sum + s.stock, 0);
+    }, 0);
+});
+
+// Add a virtual field for discount percentage
+productSchema.virtual('discountPercentage').get(function () {
+    if (this.isOnSale && this.salePrice && this.price > 0) {
+        return Math.round(((this.price - this.salePrice) / this.price) * 100);
+    }
+    return 0;
 });
 
 // Setting toObject and toJSON to include virtuals

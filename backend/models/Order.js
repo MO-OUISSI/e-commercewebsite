@@ -10,7 +10,15 @@ const orderItemSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    colorName: {
+        type: String,
+        required: true
+    },
     size: {
+        type: String,
+        required: true
+    },
+    imageUrl: {
         type: String,
         required: true
     },
@@ -46,6 +54,15 @@ const orderSchema = new mongoose.Schema({
         required: [true, 'Customer city is required'],
         trim: true
     },
+    shippingAddress: {
+        type: String,
+        required: [true, 'Shipping address is required'],
+        trim: true
+    },
+    customerNote: {
+        type: String,
+        trim: true
+    },
     items: {
         type: [orderItemSchema],
         required: true,
@@ -56,6 +73,16 @@ const orderSchema = new mongoose.Schema({
             message: 'Order must have at least one item'
         }
     },
+    subtotal: {
+        type: Number,
+        required: true,
+        min: [0, 'Subtotal cannot be negative']
+    },
+    shippingFee: {
+        type: Number,
+        required: true,
+        default: 30
+    },
     totalAmount: {
         type: Number,
         required: true,
@@ -63,8 +90,13 @@ const orderSchema = new mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['new', 'confirmed', 'delivered', 'cancelled'],
+        enum: ['new', 'confirmed', 'shipped', 'delivered', 'cancelled'],
         default: 'new'
+    },
+    paymentStatus: {
+        type: String,
+        enum: ['pending', 'paid', 'refunded'],
+        default: 'pending'
     },
     createdAt: {
         type: Date,

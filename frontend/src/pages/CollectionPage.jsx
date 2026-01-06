@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Filter, ChevronDown, ArrowRight, ChevronLeft, Loader2 } from 'lucide-react';
+import productService from '../api/productService';
 import '../styles/CollectionPage.css';
 
 const CollectionPage = () => {
@@ -8,8 +9,6 @@ const CollectionPage = () => {
   const categoryName = id ? id.charAt(0).toUpperCase() + id.slice(1).replace('-', ' ') : 'Collection';
   
   const LIMIT = 12;
-  const TOTAL_ITEMS = 48;
-  const totalPages = Math.ceil(TOTAL_ITEMS / LIMIT);
   
   const [currentPage, setCurrentPage] = useState(1);
   const [displayedProducts, setDisplayedProducts] = useState([]);
@@ -24,40 +23,53 @@ const CollectionPage = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Reset page and show loader when category changes
+  // Fetch products from API
   useEffect(() => {
-    setIsInitialLoading(true);
-    setCurrentPage(1);
-    // Simulate initial data fetch
-    const timer = setTimeout(() => {
-      setIsInitialLoading(false);
-    }, 400);
-    return () => clearTimeout(timer);
+    const fetchProducts = async () => {
+      setIsInitialLoading(true);
+      // Min duration promise
+      const minDuration = new Promise(resolve => setTimeout(resolve, 600));
+
+      try {
+        const query = {
+          category: id !== 'all' ? id : undefined
+        };
+        const [response] = await Promise.all([
+          productService.getAllProducts(query),
+          minDuration
+        ]);
+        
+        const products = response.data.products;
+        setDisplayedProducts(products);
+        setCurrentPage(1);
+      } catch (error) {
+        console.error("Failed to fetch products", error);
+      } finally {
+        setIsInitialLoading(false);
+      }
+    };
+
+    fetchProducts();
   }, [id]);
 
-  // Generate mock data based on total items
-  const allProducts = useMemo(() => Array.from({ length: TOTAL_ITEMS }, (_, i) => ({
-    id: i + 1,
-    name: `${categoryName} Item ${i + 1}`,
-    price: (Math.random() * 100 + 40).toFixed(2),
-  })), [categoryName]);
+  // Logic for Desktop Pagination (Client-side for now to keep it simple)
+  const displayedItems = useMemo(() => {
+    if (isMobile) {
+      return displayedProducts.slice(0, currentPage * LIMIT);
+    }
+    const startIndex = (currentPage - 1) * LIMIT;
+    return displayedProducts.slice(startIndex, startIndex + LIMIT);
+  }, [displayedProducts, currentPage, isMobile, LIMIT]);
 
-  // Logic for Desktop Pagination
+  // Scroll to top on page change
   useEffect(() => {
-    if (!isMobile) {
-      const startIndex = (currentPage - 1) * LIMIT;
-      const endIndex = startIndex + LIMIT;
-      setDisplayedProducts(allProducts.slice(startIndex, endIndex));
+    if (!isInitialLoading) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [currentPage, isMobile, id, allProducts]);
+  }, [currentPage, isInitialLoading]);
 
-  // Logic for Mobile "Load More"
-  useEffect(() => {
-    if (isMobile) {
-      setDisplayedProducts(allProducts.slice(0, currentPage * LIMIT));
-    }
-  }, [currentPage, isMobile, id, allProducts]);
+  // Update total pages based on real products count
+  const dynamicTotalPages = Math.ceil(displayedProducts.length / LIMIT) || 1;
 
   const handleLoadMore = () => {
     setIsLoading(true);
@@ -69,7 +81,7 @@ const CollectionPage = () => {
   };
 
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
+    if (page >= 1 && page <= dynamicTotalPages) {
       setCurrentPage(page);
     }
   };
@@ -93,23 +105,57 @@ const CollectionPage = () => {
            </div>
         </header>
 
-        {/* Product Grid */}
-        <div className="product-grid">
+        {/* Product Grid / Empty State */}
+        <div className={`product-grid ${!isInitialLoading && displayedProducts.length === 0 ? 'empty' : ''}`}>
           {isInitialLoading ? (
-            <div className="collection-loader">
-              <Loader2 size={40} className="spinner" />
-              <p>Loading products...</p>
+            /* Skeleton Loader */
+            Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="skeleton-card">
+                <div className="skeleton-image"></div>
+                <div className="skeleton-info">
+                  <div className="skeleton-text name"></div>
+                  <div className="skeleton-text price"></div>
+                </div>
+              </div>
+            ))
+          ) : displayedProducts.length === 0 ? (
+            /* Empty State */
+            <div className="empty-collection-state">
+              <h2 className="empty-title">No items in this collection</h2>
+              <p className="empty-text">
+                This collection is currently empty.<br />
+                New pieces will be added soon, stay tuned.
+              </p>
+              <Link to="/" className="browse-btn">
+                Browse other collections
+                <ArrowRight size={18} />
+              </Link>
             </div>
           ) : (
-            displayedProducts.map((product) => (
-              <Link key={product.id} to={`/collection/${id}/${product.id}`} className="product-card">
+            displayedItems.map((product) => (
+              <Link key={product._id} to={`/collection/${id}/${product._id}`} className="product-card">
                 <div className="product-image-placeholder">
-                  {/* Image will be added here later */}
+                  <div className="card-badges">
+                    {product.isNewProduct && <span className="card-badge new">New</span>}
+                    {product.isOnSale && <span className="card-badge sale">Sale</span>}
+                  </div>
+                  {product.images?.[0] ? (
+                    <img src={`http://localhost:5000${product.images[0]}`} alt={product.name} className="grid-img" />
+                  ) : null}
                 </div>
                 <div className="product-details">
                   <h3 className="product-name">{product.name}</h3>
                   <div className="product-footer">
-                     <span className="product-price">${product.price}</span>
+                     <div className="price-stack">
+                       {product.isOnSale ? (
+                         <>
+                           <span className="product-price sale">{product.salePrice} MAD</span>
+                           <span className="product-price original">{product.price} MAD</span>
+                         </>
+                       ) : (
+                         <span className="product-price">{product.price} MAD</span>
+                       )}
+                     </div>
                      <button className="add-btn">
                        <ArrowRight size={16} />
                      </button>
@@ -125,7 +171,7 @@ const CollectionPage = () => {
           {(!isInitialLoading && displayedProducts.length > 0) && (
             isMobile ? (
               /* Mobile: Load More Button */
-              currentPage < totalPages && (
+              currentPage < dynamicTotalPages && (
                 <button 
                   className={`load-more-btn ${isLoading ? 'loading' : ''}`}
                   onClick={handleLoadMore}
@@ -153,7 +199,7 @@ const CollectionPage = () => {
                 </button>
                 
                 <div className="pagination-numbers">
-                  {[...Array(totalPages)].map((_, idx) => (
+                  {[...Array(dynamicTotalPages)].map((_, idx) => (
                     <button
                       key={idx + 1}
                       className={`page-number ${currentPage === idx + 1 ? 'active' : ''}`}
@@ -167,7 +213,7 @@ const CollectionPage = () => {
                 <button 
                   className="pagination-arrow" 
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
+                  disabled={currentPage === dynamicTotalPages}
                 >
                   <ArrowRight size={20} />
                 </button>

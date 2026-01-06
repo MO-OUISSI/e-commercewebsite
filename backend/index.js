@@ -8,6 +8,8 @@ require('dotenv').config();
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const collectionRoutes = require('./routes/collectionRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 // Import error handler
 const errorHandler = require('./middlewares/errorHandler');
@@ -37,6 +39,8 @@ connection().then(async () => {
 app.use('/auth', authRoutes);
 app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
+app.use('/collections', collectionRoutes);
+app.use('/cart', cartRoutes);
 
 // Health check route
 app.get('/api/health', (req, res) => {

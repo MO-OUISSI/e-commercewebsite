@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const Collection = require('../models/Collection');
 const path = require('path');
 const fs = require('fs');
 
@@ -57,34 +58,52 @@ exports.getProductById = async (req, res, next) => {
 // Create new product (admin only)
 exports.createProduct = async (req, res, next) => {
     try {
-        const { name, description, price, category, sizes } = req.body;
+        const { name, description, price, category, sizes, colors } = req.body;
 
-        // Validate required fields
-        if (!name || !description || !price || !category || !sizes) {
+        if (!name || !description || !price || !category || !colors) {
             return res.status(400).json({
                 success: false,
-                message: 'Please provide all required fields: name, description, price, category, sizes'
+                message: 'Please provide all required fields: name, description, price, category, colors'
             });
         }
 
-        // Parse sizes - it should be an array of objects: [{ label: 'S', stock: 10 }]
-        let processedSizes = sizes;
-        if (typeof sizes === 'string') {
+        // Validate if category exists in Collections
+        const collectionExists = await Collection.findOne({ slug: category.toLowerCase() });
+        if (!collectionExists) {
+            return res.status(400).json({
+                success: false,
+                message: `Category '${category}' does not exist as a collection. Please create the collection first.`
+            });
+        }
+
+        // Parse colors if provided as string
+        let processedColors = colors || [];
+        if (typeof colors === 'string') {
             try {
-                processedSizes = JSON.parse(sizes);
+                processedColors = JSON.parse(colors);
             } catch (error) {
                 return res.status(400).json({
                     success: false,
-                    message: 'Sizes must be a valid JSON array of objects with label and stock'
+                    message: 'Colors must be a valid JSON array of objects'
                 });
             }
         }
 
-        if (!Array.isArray(processedSizes) || processedSizes.length === 0) {
+        if (!Array.isArray(processedColors) || processedColors.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Product must have at least one size with stock'
+                message: 'Product must have at least one color variant'
             });
+        }
+
+        // Validate nested sizes for each color
+        for (const color of processedColors) {
+            if (!color.sizes || !Array.isArray(color.sizes) || color.sizes.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Color '${color.name}' must have at least one size variant with stock`
+                });
+            }
         }
 
         // Handle uploaded images
@@ -99,9 +118,13 @@ exports.createProduct = async (req, res, next) => {
             description,
             price: parseFloat(price),
             category: category.toLowerCase(),
-            sizes: processedSizes,
+            colors: processedColors,
             images: imageUrls,
-            isActive: true
+            isActive: true,
+            isFeatured: req.body.isFeatured === 'true' || req.body.isFeatured === true,
+            isNewProduct: req.body.isNewProduct === 'true' || req.body.isNewProduct === true,
+            isOnSale: req.body.isOnSale === 'true' || req.body.isOnSale === true,
+            salePrice: req.body.salePrice ? parseFloat(req.body.salePrice) : undefined
         });
 
         await product.save();
@@ -119,7 +142,7 @@ exports.createProduct = async (req, res, next) => {
 // Update product (admin only)
 exports.updateProduct = async (req, res, next) => {
     try {
-        const { name, description, price, category, sizes, stock, isActive } = req.body;
+        const { name, description, price, category, sizes, stock, isActive, isFeatured, isNewProduct, isOnSale, salePrice, colors } = req.body;
 
         const product = await Product.findById(req.params.id);
 
@@ -134,22 +157,35 @@ exports.updateProduct = async (req, res, next) => {
         if (name) product.name = name;
         if (description) product.description = description;
         if (price) product.price = parseFloat(price);
-        if (category) product.category = category.toLowerCase();
-        if (sizes) {
-            let processedSizes = sizes;
-            if (typeof sizes === 'string') {
+        if (category) {
+            const collectionExists = await Collection.findOne({ slug: category.toLowerCase() });
+            if (!collectionExists) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Category '${category}' does not exist as a collection.`
+                });
+            }
+            product.category = category.toLowerCase();
+        }
+        if (isActive !== undefined) product.isActive = isActive;
+        if (isFeatured !== undefined) product.isFeatured = isFeatured;
+        if (isNewProduct !== undefined) product.isNewProduct = isNewProduct;
+        if (isOnSale !== undefined) product.isOnSale = isOnSale;
+        if (salePrice !== undefined) product.salePrice = parseFloat(salePrice);
+        if (colors) {
+            let processedColors = colors;
+            if (typeof colors === 'string') {
                 try {
-                    processedSizes = JSON.parse(sizes);
+                    processedColors = JSON.parse(colors);
                 } catch (error) {
                     return res.status(400).json({
                         success: false,
-                        message: 'Sizes must be a valid JSON array of objects with label and stock'
+                        message: 'Colors must be a valid JSON array of objects'
                     });
                 }
             }
-            product.sizes = processedSizes;
+            product.colors = processedColors;
         }
-        if (isActive !== undefined) product.isActive = isActive;
 
         // Handle new uploaded images
         if (req.files && req.files.length > 0) {
@@ -187,7 +223,40 @@ exports.deleteProduct = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: 'Product deleted successfully'
+            message: 'Product soft-deleted successfully (isActive set to false)'
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Hard Delete product (Permanent - admin only)
+exports.hardDeleteProduct = async (req, res, next) => {
+    try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found'
+            });
+        }
+
+        // Delete images from filesystem
+        if (product.images && product.images.length > 0) {
+            product.images.forEach(imgUrl => {
+                const imgPath = path.join(__dirname, '..', imgUrl);
+                if (fs.existsSync(imgPath)) {
+                    fs.unlinkSync(imgPath);
+                }
+            });
+        }
+
+        await Product.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({
+            success: true,
+            message: 'Product permanently deleted from database and filesystem'
         });
     } catch (error) {
         next(error);

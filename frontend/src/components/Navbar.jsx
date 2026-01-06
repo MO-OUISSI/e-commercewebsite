@@ -1,11 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, ShoppingBag, ChevronDown, X } from 'lucide-react';
 import { businessConfig } from '../data/businessConfig';
+import collectionService from '../api/collectionService';
+import cartService from '../api/cartService';
+import CartDrawer from './CartDrawer';
 import '../styles/Navbar.css';
 
 const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [collections, setCollections] = useState([]);
+  const [cartCount, setCartCount] = useState(0);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  useEffect(() => {
+    const fetchCollections = async () => {
+      try {
+        const response = await collectionService.getCollections();
+        setCollections(response.data.collections);
+      } catch (error) {
+        console.error("Failed to fetch collections for navbar", error);
+      }
+    };
+    fetchCollections();
+
+    const fetchCart = async () => {
+      try {
+        const sessionId = localStorage.getItem('cartSessionId');
+        if (sessionId) {
+          const response = await cartService.getCart(sessionId);
+          if (response.success) {
+            const count = response.cart.items.reduce((sum, item) => sum + item.quantity, 0);
+            setCartCount(count);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch cart count", error);
+      }
+    };
+    fetchCart();
+    
+    // Listen for cart updates (simple custom event)
+    window.addEventListener('cartUpdated', fetchCart);
+    return () => window.removeEventListener('cartUpdated', fetchCart);
+  }, []);
 
   return (
     <nav className="navbar">
@@ -40,14 +78,15 @@ const Navbar = () => {
               Collection <ChevronDown size={14} className="dropdown-icon" />
             </span>
             <div className="dropdown-content">
-              <Link to="/collection/tops">Tops</Link>
-              <Link to="/collection/t-shirts">T-Shirts</Link>
-              <Link to="/collection/sweaters">Sweaters</Link>
-              <Link to="/collection/jeans">Jeans</Link>
-              <Link to="/collection/skirts">Skirts</Link>
-              <Link to="/collection/hoodies">Hoodies</Link>
-              <Link to="/collection/jackets">Jackets</Link>
-              <Link to="/collection/pants">Pants</Link>
+              {collections.length > 0 ? (
+                collections.map(cat => (
+                  <Link key={cat.slug} to={`/collection/${cat.slug}`}>{cat.name}</Link>
+                ))
+              ) : (
+                businessConfig.categories.map(cat => (
+                  <Link key={cat.slug} to={`/collection/${cat.slug}`}>{cat.label}</Link>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -67,11 +106,15 @@ const Navbar = () => {
           <button className="icon-btn" onClick={() => setIsSearchOpen(!isSearchOpen)}>
             {isSearchOpen ? <X size={20} strokeWidth={2} /> : <Search size={20} strokeWidth={2} />}
           </button>
-          <button className="icon-btn">
+          <button className="icon-btn cart-btn" onClick={() => setIsCartOpen(true)}>
             <ShoppingBag size={20} strokeWidth={2} />
+            {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
           </button>
         </div>
       </div>
+
+      {/* Cart Drawer Overlay */}
+      <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </nav>
   );
 };

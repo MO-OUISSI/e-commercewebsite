@@ -14,15 +14,25 @@ export const businessConfig = {
         { name: "Twitter", icon: Twitter, url: "#" },
         { name: "Facebook", icon: Facebook, url: "#" }
     ],
+    categories: [
+        { label: "Tops", slug: "tops" },
+        { label: "T-Shirts", slug: "t-shirts" },
+        { label: "Sweaters", slug: "sweaters" },
+        { label: "Jeans", slug: "jeans" },
+        { label: "Skirts", slug: "skirts" },
+        { label: "Hoodies", slug: "hoodies" },
+        { label: "Jackets", slug: "jackets" },
+        { label: "Pants", slug: "pants" }
+    ],
     footerLinks: [
         {
             title: "Shop",
             links: [
-                { label: "New Arrivals", url: "#" },
-                { label: "Best Sellers", url: "#" },
-                { label: "Dresses", url: "#" },
-                { label: "Outerwear", url: "#" },
-                { label: "Gift Cards", url: "#" }
+                { label: "Tops", url: "/collection/tops" },
+                { label: "T-Shirts", url: "/collection/t-shirts" },
+                { label: "Jeans", url: "/collection/jeans" },
+                { label: "Jackets", url: "/collection/jackets" },
+                { label: "Outerwear", url: "/collection/outerwear" }
             ]
         },
         {

@@ -4,18 +4,18 @@ const Product = require('../models/Product');
 // Create new order (public)
 exports.createOrder = async (req, res, next) => {
     try {
-        const { customerName, customerPhone, customerCity, items } = req.body;
+        const { customerName, customerPhone, customerCity, shippingAddress, customerNote, items } = req.body;
 
         // Validate required fields
-        if (!customerName || !customerPhone || !customerCity || !items || items.length === 0) {
+        if (!customerName || !customerPhone || !customerCity || !shippingAddress || !items || items.length === 0) {
             return res.status(400).json({
                 success: false,
-                message: 'Please provide all required fields: customerName, customerPhone, customerCity, and items'
+                message: 'Please provide all required fields: customerName, customerPhone, customerCity, shippingAddress, and items'
             });
         }
 
         // Validate and process order items
-        let totalAmount = 0;
+        let subtotal = 0;
         const processedItems = [];
 
         for (const item of items) {
@@ -28,49 +28,69 @@ exports.createOrder = async (req, res, next) => {
                 });
             }
 
-            // Find the specific size in product.sizes
-            const productSize = product.sizes.find(s => s.label === item.size);
-
-            if (!productSize) {
+            // 1. Find the specific color variant
+            const colorVariant = product.colors.find(c => c.name === item.colorName);
+            if (!colorVariant) {
                 return res.status(400).json({
                     success: false,
-                    message: `Size ${item.size} not available for product ${product.name}`
+                    message: `Color ${item.colorName} not found for product ${product.name}`
                 });
             }
 
-            // Check stock for this specific size
-            if (productSize.stock < item.quantity) {
+            // 2. Find the specific size in the color variant
+            const sizeVariant = colorVariant.sizes.find(s => s.label === item.size);
+            if (!sizeVariant) {
                 return res.status(400).json({
                     success: false,
-                    message: `Insufficient stock for size ${item.size} of product ${product.name}. Available: ${productSize.stock}`
+                    message: `Size ${item.size} not available for color ${item.colorName} of product ${product.name}`
                 });
             }
 
-            const itemTotal = product.price * item.quantity;
-            totalAmount += itemTotal;
+            // 3. Check stock
+            if (sizeVariant.stock < item.quantity) {
+                return res.status(400).json({
+                    success: false,
+                    message: `Insufficient stock for ${item.colorName}/${item.size} of product ${product.name}. Available: ${sizeVariant.stock}`
+                });
+            }
+
+            // 4. Determine effective price (Security: Ignore frontend price)
+            const price = product.isOnSale && product.salePrice ? product.salePrice : product.price;
+            const itemTotal = price * item.quantity;
+            subtotal += itemTotal;
 
             processedItems.push({
                 productId: product._id,
                 productName: product.name,
+                colorName: item.colorName,
                 size: item.size,
+                imageUrl: colorVariant.imageUrl,
                 quantity: item.quantity,
-                price: product.price
+                price: price
             });
 
-            // Update product stock for this specific size
-            productSize.stock -= item.quantity;
-            product.markModified('sizes');
+            // 5. Update stock
+            sizeVariant.stock -= item.quantity;
+            product.markModified('colors');
             await product.save();
         }
+
+        const shippingFee = subtotal > 1000 ? 0 : 30; // Example logic: Free shipping over 1000 MAD
+        const totalAmount = subtotal + shippingFee;
 
         // Create order
         const order = new Order({
             customerName,
             customerPhone,
             customerCity,
+            shippingAddress,
+            customerNote,
             items: processedItems,
+            subtotal,
+            shippingFee,
             totalAmount,
-            status: 'new'
+            status: 'new',
+            paymentStatus: 'pending'
         });
 
         await order.save();
@@ -155,7 +175,7 @@ exports.updateOrderStatus = async (req, res, next) => {
             });
         }
 
-        const validStatuses = ['new', 'confirmed', 'delivered', 'cancelled'];
+        const validStatuses = ['new', 'confirmed', 'shipped', 'delivered', 'cancelled'];
         if (!validStatuses.includes(status)) {
             return res.status(400).json({
                 success: false,
@@ -201,19 +221,26 @@ exports.generateWhatsAppLink = async (req, res, next) => {
         // Format order details for WhatsApp message
         let message = `*New Order - ${order.orderNumber}*\n\n`;
         message += `*Customer Details:*\n`;
-        message += `Name: ${order.customerName}\n`;
-        message += `Phone: ${order.customerPhone}\n`;
-        message += `City: ${order.customerCity}\n\n`;
-        message += `*Order Items:*\n`;
+        message += `Nom: ${order.customerName}\n`;
+        message += `Tél: ${order.customerPhone}\n`;
+        message += `Ville: ${order.customerCity}\n`;
+        message += `Adresse: ${order.shippingAddress}\n`;
+        if (order.customerNote) {
+            message += `Note: ${order.customerNote}\n`;
+        }
+        message += `\n*Order Items:*\n`;
 
         order.items.forEach((item, index) => {
-            message += `${index + 1}. ${item.productName}\n`;
-            message += `   Size: ${item.size} | Qty: ${item.quantity} | Price: ${item.price} MAD\n`;
+            message += `${index + 1}. ${item.productName} (${item.colorName}/${item.size})\n`;
+            message += `   Qty: ${item.quantity} | Prix: ${item.price} MAD\n`;
         });
 
-        message += `\n*Total Amount:* ${order.totalAmount} MAD\n`;
+        message += `\n*Financials:*\n`;
+        message += `Sous-total: ${order.subtotal} MAD\n`;
+        message += `Livraison: ${order.shippingFee} MAD\n`;
+        message += `*Total Amount:* ${order.totalAmount} MAD\n\n`;
         message += `*Order Date:* ${new Date(order.createdAt).toLocaleDateString('fr-MA')}\n`;
-        message += ` *Status:* ${order.status.toUpperCase()}`;
+        message += `*Status:* ${order.status.toUpperCase()}`;
 
         // Get WhatsApp phone number from environment or use default
         const whatsappPhone = process.env.WHATSAPP_PHONE || '212610704293'; // Replace with actual number
