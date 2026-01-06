@@ -1,0 +1,111 @@
+.new-arrivals-page {
+    min-height: 100vh;
+    padding-bottom: 5rem;
+}
+
+.new-arrivals-hero {
+    background-color: #000;
+    color: #fff;
+    padding: 6rem 2rem;
+    text-align: center;
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-content h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    margin: 1rem 0;
+    letter-spacing: -0.02em;
+}
+
+.hero-content p {
+    font-size: 1.1rem;
+    color: #888;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.new-arrivals-container {
+    padding: 0 2rem;
+}
+
+.page-controls-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1.5rem;
+}
+
+.results-count {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Reuse styles from CollectionPage.css for grid and cards to maintain consistency */
+/* We can also define them here if we want slight variations */
+
+/* Skeleton Styles */
+.skeleton-card {
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.skeleton-image {
+    aspect-ratio: 3/4;
+    background: linear-gradient(90deg, #f0f0f0 25%, #f8f8f8 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+.skeleton-info {
+    padding: 1rem;
+}
+
+.skeleton-text {
+    height: 1rem;
+    background: #f0f0f0;
+    margin-bottom: 0.5rem;
+    border-radius: 4px;
+}
+
+.skeleton-text.name {
+    width: 70%;
+}
+
+.skeleton-text.price {
+    width: 40%;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .new-arrivals-hero {
+        padding: 6rem 1.5rem 4rem 1.5rem;
+    }
+
+    .new-arrivals-container {
+        padding: 0 1rem;
+    }
+
+    .page-controls-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+}

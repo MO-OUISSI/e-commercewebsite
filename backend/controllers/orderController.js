@@ -205,61 +205,6 @@ exports.updateOrderStatus = async (req, res, next) => {
     }
 };
 
-// Generate WhatsApp link for order
-exports.generateWhatsAppLink = async (req, res, next) => {
-    try {
-        const order = await Order.findById(req.params.id)
-            .populate('items.productId', 'name');
-
-        if (!order) {
-            return res.status(404).json({
-                success: false,
-                message: 'Order not found'
-            });
-        }
-
-        // Format order details for WhatsApp message
-        let message = `*New Order - ${order.orderNumber}*\n\n`;
-        message += `*Customer Details:*\n`;
-        message += `Nom: ${order.customerName}\n`;
-        message += `Tél: ${order.customerPhone}\n`;
-        message += `Ville: ${order.customerCity}\n`;
-        message += `Adresse: ${order.shippingAddress}\n`;
-        if (order.customerNote) {
-            message += `Note: ${order.customerNote}\n`;
-        }
-        message += `\n*Order Items:*\n`;
-
-        order.items.forEach((item, index) => {
-            message += `${index + 1}. ${item.productName} (${item.colorName}/${item.size})\n`;
-            message += `   Qty: ${item.quantity} | Prix: ${item.price} MAD\n`;
-        });
-
-        message += `\n*Financials:*\n`;
-        message += `Sous-total: ${order.subtotal} MAD\n`;
-        message += `Livraison: ${order.shippingFee} MAD\n`;
-        message += `*Total Amount:* ${order.totalAmount} MAD\n\n`;
-        message += `*Order Date:* ${new Date(order.createdAt).toLocaleDateString('fr-MA')}\n`;
-        message += `*Status:* ${order.status.toUpperCase()}`;
-
-        // Get WhatsApp phone number from environment or use default
-        const whatsappPhone = process.env.WHATSAPP_PHONE || '212610704293'; // Replace with actual number
-
-        // Generate WhatsApp URL
-        const encodedMessage = encodeURIComponent(message);
-        const whatsappUrl = `https://wa.me/${whatsappPhone}?text=${encodedMessage}`;
-
-        res.status(200).json({
-            success: true,
-            data: {
-                whatsappUrl,
-                message
-            }
-        });
-    } catch (error) {
-        next(error);
-    }
-};
 
 // Get order statistics (admin only)
 exports.getOrderStats = async (req, res, next) => {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Truck, Ruler, ChevronRight, ArrowRight, Minus, Plus, Loader2, ShoppingBag } from 'lucide-react';
 import productService from '../api/productService';
 import cartService from '../api/cartService';
@@ -7,6 +7,7 @@ import '../styles/ProductDetailPage.css';
 
 const ProductDetailPage = () => {
   const { id, productId } = useParams();
+  const navigate = useNavigate();
   const [selectedSize, setSelectedSize] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -87,11 +88,26 @@ const ProductDetailPage = () => {
     }
   };
 
+    const handleDirectCheckout = () => {
+        if (!selectedSize) {
+            setCartMessage({ text: 'Veuillez choisir une taille d\'abord', type: 'error' });
+            setTimeout(() => setCartMessage({ text: '', type: '' }), 3000); // Clear message
+            return;
+        }
+        navigate('/checkout', {
+            state: {
+                product,
+                selectedColor,
+                selectedSize,
+                quantity
+            }
+        });
+    };
+
   if (loading) {
     return (
-      <div className="collection-loader">
-        <Loader2 className="spinner" size={48} />
-        <p>Loading product details...</p>
+      <div className="product-page-loader">
+        <Loader2 className="animate-spin" size={48} />
       </div>
     );
   }
@@ -267,7 +283,7 @@ const ProductDetailPage = () => {
                   )}
                 </span>
               </button>
-              <button className="buy-now-btn">
+              <button className="buy-now-btn" onClick={handleDirectCheckout}>
                 <span>Achetez avec paiement à la livraison</span>
                 <Truck size={20} />
               </button>

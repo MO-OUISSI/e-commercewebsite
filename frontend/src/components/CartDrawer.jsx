@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, Minus, Plus, ShoppingBag, ArrowRight, Trash2 } from 'lucide-react';
 import cartService from '../api/cartService';
 import '../styles/CartDrawer.css';
@@ -6,6 +7,7 @@ import '../styles/CartDrawer.css';
 const CartDrawer = ({ isOpen, onClose }) => {
     const [cart, setCart] = useState(null);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const fetchCart = async () => {
         setLoading(true);
@@ -49,6 +51,11 @@ const CartDrawer = ({ isOpen, onClose }) => {
         } catch (error) {
             console.error("Error updating quantity", error);
         }
+    };
+
+    const handleCheckout = () => {
+        onClose();
+        navigate('/checkout', { state: { cartItems: cart.items } });
     };
 
     if (!isOpen) return null;
@@ -127,7 +134,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                                 <span>{cart.total} MAD</span>
                             </div>
                         </div>
-                        <button className="checkout-btn">
+                        <button className="checkout-btn" onClick={handleCheckout}>
                             Passer à la caisse
                             <ArrowRight size={20} />
                         </button>
