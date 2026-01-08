@@ -41,6 +41,20 @@ const cartService = {
             console.error('Error updating cart item:', error);
             throw error;
         }
+    },
+
+    /**
+     * Clear the cart
+     */
+    clearCart: async (sessionId) => {
+        try {
+            const config = sessionId ? { headers: { 'x-session-id': sessionId } } : {};
+            const response = await apiClient.delete('/cart', config);
+            return response.data;
+        } catch (error) {
+            console.error('Error clearing cart:', error);
+            throw error;
+        }
     }
 };
 

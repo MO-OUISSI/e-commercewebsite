@@ -16,7 +16,7 @@
 }
 
 .profile-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 3rem;
     /* text-5xl */
     letter-spacing: -0.025em;
@@ -98,7 +98,7 @@
 }
 
 .display-name {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1.875rem;
     /* text-3xl */
     color: var(--zinc-900);

@@ -11,6 +11,7 @@ import CheckoutPage from './pages/CheckoutPage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
+import AnnouncementBar from './components/AnnouncementBar';
 import './styles/globals.css';
 
 function Home() {
@@ -27,6 +28,7 @@ function App() {
     <Router>
       <ScrollToTop />
       <div className="App">
+        <AnnouncementBar />
         <Navbar />
         <main>
           <Routes>

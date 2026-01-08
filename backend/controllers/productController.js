@@ -1,18 +1,32 @@
 const Product = require('../models/Product');
 const Collection = require('../models/Collection');
+const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
 
 // Get all active products (public)
 exports.getAllProducts = async (req, res, next) => {
     try {
-        const { category, search } = req.query;
+        const { category, search, status } = req.query;
 
         // Build query
-        let query = { isActive: true };
+        let query = {};
+
+        // Only filter by active unless explicitly asked to include hidden
+        if (req.query.includeHidden !== 'true') {
+            query.isActive = true;
+        }
 
         if (category) {
             query.category = category.toLowerCase();
+        }
+
+        if (status === 'low-stock') {
+            query['colors.sizes'] = {
+                $elemMatch: {
+                    $expr: { $lte: ['$stock', '$minThreshold'] }
+                }
+            };
         }
 
         if (search) {
@@ -37,7 +51,17 @@ exports.getAllProducts = async (req, res, next) => {
 // Get single product by ID (public)
 exports.getProductById = async (req, res, next) => {
     try {
-        const product = await Product.findOne({ _id: req.params.id, isActive: true });
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found (Invalid ID)'
+            });
+        }
+        let query = { _id: req.params.id };
+        if (req.query.includeHidden !== 'true') {
+            query.isActive = true;
+        }
+        const product = await Product.findOne(query);
 
         if (!product) {
             return res.status(404).json({
@@ -106,9 +130,21 @@ exports.createProduct = async (req, res, next) => {
             }
         }
 
-        // Handle uploaded images
+        // Handle uploaded images and map them to colors
         let imageUrls = [];
         if (req.files && req.files.length > 0) {
+            // Assume the order of files in req.files matches the order of colors provided
+            // This is a standard way to handle multi-part uploads with nested arrays
+            let fileIndex = 0;
+            processedColors = processedColors.map(color => {
+                // If the frontend sent an image for this color, assign it
+                if (fileIndex < req.files.length) {
+                    color.imageUrl = `/uploads/products/${req.files[fileIndex].filename}`;
+                    fileIndex++;
+                }
+                return color;
+            });
+
             imageUrls = req.files.map(file => `/uploads/products/${file.filename}`);
         }
 
@@ -120,7 +156,7 @@ exports.createProduct = async (req, res, next) => {
             category: category.toLowerCase(),
             colors: processedColors,
             images: imageUrls,
-            isActive: true,
+            isActive: req.body.isActive === 'false' ? false : true,
             isFeatured: req.body.isFeatured === 'true' || req.body.isFeatured === true,
             isNewProduct: req.body.isNewProduct === 'true' || req.body.isNewProduct === true,
             isOnSale: req.body.isOnSale === 'true' || req.body.isOnSale === true,
@@ -142,6 +178,12 @@ exports.createProduct = async (req, res, next) => {
 // Update product (admin only)
 exports.updateProduct = async (req, res, next) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found (Invalid ID)'
+            });
+        }
         const { name, description, price, category, sizes, stock, isActive, isFeatured, isNewProduct, isOnSale, salePrice, colors } = req.body;
 
         const product = await Product.findById(req.params.id);
@@ -172,25 +214,40 @@ exports.updateProduct = async (req, res, next) => {
         if (isNewProduct !== undefined) product.isNewProduct = isNewProduct;
         if (isOnSale !== undefined) product.isOnSale = isOnSale;
         if (salePrice !== undefined) product.salePrice = parseFloat(salePrice);
+        // ... existing code ...
         if (colors) {
+            console.log('UpdateProduct - Received Colors Body:', colors); // DEBUG LOG
             let processedColors = colors;
             if (typeof colors === 'string') {
                 try {
                     processedColors = JSON.parse(colors);
+                    console.log('UpdateProduct - Parsed Colors:', JSON.stringify(processedColors, null, 2)); // DEBUG LOG
                 } catch (error) {
+                    console.error('UpdateProduct - JSON Parse Error:', error); // DEBUG LOG
                     return res.status(400).json({
                         success: false,
                         message: 'Colors must be a valid JSON array of objects'
                     });
                 }
             }
-            product.colors = processedColors;
-        }
+            // Handle new uploaded images and map them to colors that need them
+            if (req.files && req.files.length > 0) {
+                let fileIndex = 0;
+                processedColors = processedColors.map(color => {
+                    // Check if color needs a new image (indicated by frontend)
+                    // We'll use a specific convention: if imageUrl is 'new_upload', we use the next file
+                    if (color.imageUrl === 'new_upload' && fileIndex < req.files.length) {
+                        color.imageUrl = `/uploads/products/${req.files[fileIndex].filename}`;
+                        fileIndex++;
+                    }
+                    return color;
+                });
 
-        // Handle new uploaded images
-        if (req.files && req.files.length > 0) {
-            const newImageUrls = req.files.map(file => `/uploads/products/${file.filename}`);
-            product.images = [...product.images, ...newImageUrls];
+                const newImageUrls = req.files.map(file => `/uploads/products/${file.filename}`);
+                product.images = [...product.images, ...newImageUrls];
+            }
+
+            product.colors = processedColors;
         }
 
         await product.save();
@@ -201,6 +258,66 @@ exports.updateProduct = async (req, res, next) => {
             data: { product }
         });
     } catch (error) {
+        console.error('UpdateProduct - Error:', error); // DEBUG LOG
+        // Send specific validation error if available
+        const message = error.name === 'ValidationError'
+            ? Object.values(error.errors).map(err => err.message).join(', ')
+            : error.message || 'Failed to update product';
+
+        res.status(400).json({
+            success: false,
+            message: message
+        });
+    }
+};
+
+// Get low stock products (admin only)
+exports.getLowStockProducts = async (req, res, next) => {
+    try {
+        // Find all products and filter in application code
+        // MongoDB $expr with nested arrays is complex, so we'll use aggregation
+        const products = await Product.aggregate([
+            { $match: { isActive: true } },
+            { $unwind: '$colors' },
+            { $unwind: '$colors.sizes' },
+            {
+                $match: {
+                    $expr: { $lte: ['$colors.sizes.stock', '$colors.sizes.minThreshold'] }
+                }
+            },
+            {
+                $group: {
+                    _id: '$_id',
+                    name: { $first: '$name' },
+                    colors: { $push: '$colors' }
+                }
+            }
+        ]);
+
+        // Refine the result to only include relevant information for alerts
+        const alerts = [];
+        products.forEach(product => {
+            product.colors.forEach(color => {
+                if (color.sizes.stock <= color.sizes.minThreshold) {
+                    alerts.push({
+                        productId: product._id,
+                        productName: product.name,
+                        colorName: color.name,
+                        sizeLabel: color.sizes.label,
+                        currentStock: color.sizes.stock,
+                        threshold: color.sizes.minThreshold,
+                        image: color.imageUrl
+                    });
+                }
+            });
+        });
+
+        res.status(200).json({
+            success: true,
+            count: alerts.length,
+            data: { alerts }
+        });
+    } catch (error) {
         next(error);
     }
 };
@@ -208,6 +325,12 @@ exports.updateProduct = async (req, res, next) => {
 // Delete product (soft delete - admin only)
 exports.deleteProduct = async (req, res, next) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found (Invalid ID)'
+            });
+        }
         const product = await Product.findById(req.params.id);
 
         if (!product) {
@@ -233,6 +356,12 @@ exports.deleteProduct = async (req, res, next) => {
 // Hard Delete product (Permanent - admin only)
 exports.hardDeleteProduct = async (req, res, next) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found (Invalid ID)'
+            });
+        }
         const product = await Product.findById(req.params.id);
 
         if (!product) {
@@ -266,6 +395,12 @@ exports.hardDeleteProduct = async (req, res, next) => {
 // Delete product image (admin only)
 exports.deleteProductImage = async (req, res, next) => {
     try {
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Product not found (Invalid ID)'
+            });
+        }
         const { id, imageUrl } = req.params;
 
         const product = await Product.findById(id);

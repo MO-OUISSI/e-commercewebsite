@@ -26,10 +26,12 @@ const storage = multer.diskStorage({
         cb(null, targetDir);
     },
     filename: function (req, file, cb) {
-        // Generate unique filename: timestamp-randomnumber-originalname
+        // Generate unique filename: timestamp-randomnumber-sanitizedname
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const ext = path.extname(file.originalname);
-        const nameWithoutExt = path.basename(file.originalname, ext);
+        const nameWithoutExt = path.basename(file.originalname, ext)
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/[^a-zA-Z0-9.\-_]/g, ''); // Remove non-alphanumeric except dots/hyphens/underscores
         cb(null, nameWithoutExt + '-' + uniqueSuffix + ext);
     }
 });

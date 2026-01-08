@@ -3,7 +3,7 @@ import Sidebar from './Sidebar';
 import Header from './Header';
 import '../styles/AdminLayout.css';
 
-const AdminLayout = ({ children, activeTab, onTabChange, pageTitle, onLogout }) => {
+const AdminLayout = ({ children, activeTab, onTabChange, pageTitle, onLogout, user }) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
     const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -31,6 +31,7 @@ const AdminLayout = ({ children, activeTab, onTabChange, pageTitle, onLogout }) 
                     onTabChange={onTabChange}
                     onLogout={onLogout}
                     onToggleMenu={toggleMobileMenu}
+                    user={user}
                 />
 
                 <div className="scrollable-area">

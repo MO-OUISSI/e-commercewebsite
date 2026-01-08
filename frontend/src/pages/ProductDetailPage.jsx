@@ -75,6 +75,16 @@ const ProductDetailPage = () => {
       if (response.success) {
         setCartMessage({ text: 'Ajouté au panier avec succès !', type: 'success' });
         window.dispatchEvent(new Event('cartUpdated'));
+
+        // Analytics Tracking
+        try {
+            fetch(`http://localhost:5000/api/analytics/cart/${product._id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            }).catch(err => console.error('Analytics tracking failed', err));
+        } catch (err) {
+            // Ignore analytics errors
+        }
       } else {
         setCartMessage({ text: response.message || 'Échec de l\'ajout au panier', type: 'error' });
       }

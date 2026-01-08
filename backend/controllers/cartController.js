@@ -243,3 +243,32 @@ exports.updateCartItem = async (req, res) => {
         res.status(500).json({ success: false, message: error.message });
     }
 };
+// CLEAR Cart
+exports.clearCart = async (req, res) => {
+    try {
+        const userId = req.user ? req.user.id : null;
+        const sessionId = req.headers['x-session-id'] || req.query.sessionId;
+
+        let cart;
+        if (userId) {
+            cart = await Cart.findOne({ user: userId });
+        } else if (sessionId) {
+            cart = await Cart.findOne({ sessionId: sessionId });
+        }
+
+        if (!cart) {
+            return res.status(200).json({ success: true, message: "Cart already empty" });
+        }
+
+        cart.items = [];
+        await cart.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Cart cleared successfully",
+            cart: { items: [], subtotal: 0, total: 0 }
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

@@ -47,6 +47,11 @@ const productSchema = new mongoose.Schema({
                         required: [true, 'Stock quantity for this variant is required'],
                         min: [0, 'Stock cannot be negative'],
                         default: 0
+                    },
+                    minThreshold: {
+                        type: Number,
+                        default: 5,
+                        min: [0, 'Threshold cannot be negative']
                     }
                 }
             ]
@@ -94,8 +99,10 @@ productSchema.pre('save', function (next) {
 
 // Add a virtual field for total stock
 productSchema.virtual('totalStock').get(function () {
+    if (!this.colors || !Array.isArray(this.colors)) return 0;
     return this.colors.reduce((total, color) => {
-        return total + color.sizes.reduce((sum, s) => sum + s.stock, 0);
+        if (!color.sizes || !Array.isArray(color.sizes)) return total;
+        return total + color.sizes.reduce((sum, s) => sum + (s.stock || 0), 0);
     }, 0);
 });
 

@@ -11,4 +11,7 @@ router.get('/me', authMiddleware, authController.getCurrentUser);
 router.get('/profile', authMiddleware, authController.getProfile);
 router.put('/profile', authMiddleware, authController.updateProfile);
 
+router.post('/register', authMiddleware, authController.register);
+router.get('/users', authMiddleware, authController.getAllUsers);
+
 module.exports = router;

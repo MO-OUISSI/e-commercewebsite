@@ -21,7 +21,7 @@
 }
 
 .inventory-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 3rem;
     /* text-5xl */
     letter-spacing: -0.025em;
@@ -31,11 +31,12 @@
 .add-product-btn {
     background-color: #000;
     color: #fff;
-    padding: 12px 24px;
-    /* py-3 px-6 */
+    padding: 10px 20px;
+    /* py-2.5 px-5 */
     border-radius: 9999px;
     /* rounded-full */
-    font-size: 1rem;
+    font-size: 0.875rem;
+    /* text-sm */
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -44,10 +45,126 @@
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     /* shadow-lg shadow-zinc-200 */
     transition: background-color 0.2s;
+    white-space: nowrap;
 }
 
 .add-product-btn:hover {
-    background-color: var(--zinc-800);
+    background-color: #27272a;
+    color: #fff;
+}
+
+@media (max-width: 640px) {
+    .add-product-btn {
+        padding: 8px 16px;
+        font-size: 0.8125rem;
+        margin-left: auto;
+        /* Push to the right */
+    }
+}
+
+.inventory-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+@media (min-width: 640px) {
+    .inventory-header-left {
+        flex-direction: row;
+        align-items: flex-end;
+        gap: 24px;
+    }
+}
+
+.custom-filter-dropdown {
+    position: relative;
+}
+
+.filter-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: white;
+    border: 1px solid var(--zinc-200);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--zinc-700);
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 38px;
+    white-space: nowrap;
+}
+
+.filter-dropdown-trigger:hover {
+    border-color: var(--zinc-300);
+    background-color: var(--zinc-50);
+}
+
+.filter-dropdown-trigger.active {
+    border-color: var(--zinc-900);
+    color: var(--zinc-900);
+}
+
+.filter-dropdown-trigger .dropdown-arrow {
+    margin-left: auto;
+    transition: transform 0.2s;
+}
+
+.filter-dropdown-trigger .dropdown-arrow.open {
+    transform: rotate(180deg);
+}
+
+.filter-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    background: #fff;
+    border: 1px solid var(--zinc-200);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    min-width: 200px;
+    padding: 6px;
+    z-index: 50;
+    animation: filterDropdownFade 0.2s ease-out;
+}
+
+@keyframes filterDropdownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.filter-dropdown-item {
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--zinc-600);
+    background: none;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.filter-dropdown-item:hover {
+    background-color: var(--zinc-50);
+    color: var(--zinc-900);
+}
+
+.filter-dropdown-item.selected {
+    background-color: var(--zinc-900);
+    color: #fff;
+    font-weight: 600;
 }
 
 .inventory-table-container {
@@ -143,7 +260,7 @@
 }
 
 .price-cell {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     /* text-base */
     color: var(--zinc-900);
@@ -195,7 +312,7 @@
 }
 
 .current-price {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1rem;
     color: var(--zinc-900);
     font-weight: 500;
@@ -253,5 +370,210 @@
 
 .action-btn.delete:hover {
     color: #dc2626;
-    background-color: #fef2f2;
+    background-color: transparent;
+    /* Clean hover */
+}
+
+/* Mobile Inventory Grid */
+@media (max-width: 640px) {
+    .inventory-table thead {
+        display: none;
+    }
+
+    .inventory-table tbody {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .inventory-table tr {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border: 1px solid var(--zinc-200);
+        border-radius: 16px;
+        padding: 12px;
+        height: 100%;
+    }
+
+    .inventory-table td {
+        display: block;
+        padding: 0;
+        border: none;
+        width: 100%;
+    }
+
+    /* Hide unnecessary columns for compact view */
+    .id-cell,
+    .category-cell,
+    .stock-cell {
+        display: none !important;
+    }
+
+    .product-info {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 140px;
+        border-radius: 12px;
+        margin-bottom: 4px;
+    }
+
+    .product-name {
+        font-size: 0.875rem;
+        line-height: 1.3;
+        height: 2.6em;
+        /* Limit to 2 lines approximately */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    /* Price styling */
+    .price-cell {
+        text-align: center;
+        margin-bottom: 8px;
+    }
+
+    .price-stack {
+        align-items: center;
+    }
+
+    /* Status badge positioning */
+    .inventory-table td:nth-child(6) {
+        /* Status column index might vary, let's target by proximity if possible or accept nth-child. 
+       In Inventory.jsx: ID(1), Product(2), Category(3), Stock(4), Price(5), Status(6), Actions(7). 
+       So status is nth-child(6). */
+        display: flex;
+        justify-content: center;
+        margin-bottom: 12px;
+    }
+
+    .status-badge {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+    }
+
+    /* Actions styling */
+    .actions-cell {
+        justify-content: space-between;
+        /* Spread icons */
+        padding-right: 0;
+        padding-top: 12px;
+        border-top: 1px solid var(--zinc-100);
+        margin-top: auto;
+        /* Push to bottom if height varies */
+        gap: 0;
+    }
+
+    .action-btn {
+        padding: 8px;
+        background-color: var(--zinc-50);
+        border-radius: 8px;
+    }
+
+    .action-btn:hover {
+        background-color: var(--zinc-100);
+    }
+}
+
+
+.status-badge.hidden {
+    background-color: #fee2e2;
+    color: #ef4444;
+}
+
+/* Inventory Filter Styles */
+.inventory-filters-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-search {
+    position: relative;
+    width: 240px;
+}
+
+.filter-input-text {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--zinc-200);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--zinc-900);
+    background-color: white;
+    transition: all 0.2s;
+}
+
+.filter-input-text:focus {
+    outline: none;
+    border-color: var(--zinc-900);
+    box-shadow: 0 0 0 2px rgba(24, 24, 27, 0.1);
+}
+
+.filter-price-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-input-price {
+    width: 80px;
+    padding: 8px;
+    border: 1px solid var(--zinc-200);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    color: var(--zinc-900);
+}
+
+.filter-input-price:focus {
+    outline: none;
+    border-color: var(--zinc-900);
+}
+
+.price-separator {
+    color: var(--zinc-400);
+    font-weight: 500;
+}
+
+.custom-filter-dropdown {
+    position: relative;
+}
+
+.filter-dropdown-trigger {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: white;
+    border: 1px solid var(--zinc-200);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--zinc-700);
+    cursor: pointer;
+    transition: all 0.2s;
+    height: 38px;
+    white-space: nowrap;
+}
+
+.filter-dropdown-trigger:hover {
+    border-color: var(--zinc-300);
+    background-color: var(--zinc-50);
+}
+
+.filter-dropdown-trigger.active {
+    border-color: var(--zinc-900);
+    color: var(--zinc-900);
 }

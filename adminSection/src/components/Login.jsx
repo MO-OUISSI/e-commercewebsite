@@ -7,11 +7,37 @@ const Login = ({ onLogin }) => {
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
 
-    const handleSubmit = (e) => {
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Simulate authentication
-        if (email && password) {
-            onLogin();
+        setError('');
+        setIsLoading(true);
+
+        try {
+            const response = await fetch('http://localhost:5000/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.setItem('token', data.data.token);
+                localStorage.setItem('user', JSON.stringify(data.data.user));
+                onLogin(data.data.user);
+            } else {
+                setError(data.message || 'Login failed. Please check your credentials.');
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+            setError('Could not connect to server. Please ensure the backend is running.');
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -63,8 +89,14 @@ const Login = ({ onLogin }) => {
                             </div>
                         </div>
 
-                        <button type="submit" className="login-submit-btn">
-                            Sign In
+                        {error && (
+                            <div className="login-error-message fade-in" style={{ color: '#ff4d4d', fontSize: '14px', marginBottom: '15px', textAlign: 'center' }}>
+                                {error}
+                            </div>
+                        )}
+
+                        <button type="submit" className="login-submit-btn" disabled={isLoading}>
+                            {isLoading ? 'Signing In...' : 'Sign In'}
                         </button>
                     </form>
                 </div>

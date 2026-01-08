@@ -21,7 +21,7 @@
 }
 
 .orders-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 3rem;
     /* text-5xl */
     letter-spacing: -0.025em;
@@ -87,9 +87,13 @@
     transition: background-color 0.2s;
 }
 
-.orders-table tbody tr:hover {
-    background-color: rgba(250, 250, 250, 0.5);
-    /* bg-zinc-50/50 */
+.orders-table tbody tr.unread {
+    background-color: var(--zinc-50);
+    border-left: 4px solid var(--lumiere-gold);
+}
+
+.orders-table tbody tr.unread:hover {
+    background-color: var(--zinc-100);
 }
 
 .orders-table td {
@@ -147,7 +151,7 @@
 }
 
 .total-cell {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1.125rem;
     /* text-lg */
     color: var(--zinc-900);
@@ -175,27 +179,69 @@
     font-family: 'Inter', sans-serif;
 }
 
-.status-select.processing {
-    background-color: var(--zinc-900);
-    color: #fff;
-}
-
-.status-select.shipped {
+.status-select.new {
     background-color: #eff6ff;
     color: #2563eb;
     border-color: #dbeafe;
 }
 
+.status-select.confirmed {
+    background-color: #ecfdf5;
+    color: #059669;
+    border-color: #d1fae5;
+}
+
+.status-select.shipped {
+    background-color: #fffbeb;
+    color: #d97706;
+    border-color: #fef3c7;
+}
+
 .status-select.delivered {
-    background-color: #f0fdf4;
-    color: #16a34a;
-    border-color: #dcfce7;
+    background-color: var(--zinc-900);
+    color: #fff;
+    border-color: var(--zinc-800);
+}
+
+
+.status-badge-static {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border: 1px solid transparent;
+    font-family: 'Inter', sans-serif;
+    display: inline-block;
+    cursor: default;
+}
+
+.status-badge-static.delivered {
+    background-color: var(--zinc-900);
+    color: #fff;
+    border-color: var(--zinc-800);
+}
+
+.status-badge-static.cancelled {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border-color: #fee2e2;
 }
 
 .status-select.cancelled {
     background-color: #fef2f2;
     color: #dc2626;
     border-color: #fee2e2;
+}
+
+/* Fallback/Legacy */
+.status-select.processing {
+    background-color: #f4f4f5;
+    color: #71717a;
+    border-color: #e4e4e7;
 }
 
 .status-select:hover {
@@ -245,4 +291,110 @@
 .view-btn:hover {
     color: #000;
     background-color: var(--zinc-100);
+}
+
+/* Mobile Orders Card View */
+@media (max-width: 640px) {
+    .orders-table thead {
+        display: none;
+    }
+
+    .orders-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .orders-table tr {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border: 1px solid var(--zinc-200);
+        border-radius: 16px;
+        padding: 16px;
+        position: relative;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+    }
+
+    .orders-table td {
+        display: block;
+        padding: 4px 0;
+        width: 100%;
+        border: none;
+    }
+
+    /* ID and Date Row */
+    .id-cell {
+        font-size: 1rem;
+        margin-bottom: 4px;
+    }
+
+    .date-cell {
+        font-size: 0.75rem;
+        color: var(--zinc-400);
+        margin-bottom: 12px;
+        border-bottom: 1px solid var(--zinc-50);
+        padding-bottom: 12px !important;
+    }
+
+    /* Customer Info */
+    .customer-cell {
+        margin-bottom: 8px;
+    }
+
+    /* Labeled Fields */
+    .items-count::before {
+        content: "Items: ";
+        font-size: 0.75rem;
+        color: var(--zinc-400);
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .total-cell {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 4px;
+        padding-top: 8px !important;
+        border-top: 1px dashed var(--zinc-100);
+        font-weight: 700;
+    }
+
+    .total-cell::before {
+        content: "Total Amount";
+        font-size: 0.75rem;
+        color: var(--zinc-500);
+        font-family: 'Inter', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    /* Status Positioning */
+    .orders-table td:nth-child(6) {
+        /* Status column */
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        padding: 0 !important;
+    }
+
+    /* Actions */
+    .actions-cell {
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--zinc-100);
+    }
+
+    .actions-cell button {
+        padding: 10px;
+        background-color: var(--zinc-50);
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 }

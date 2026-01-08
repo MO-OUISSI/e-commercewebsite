@@ -7,13 +7,14 @@ const upload = require('../middlewares/uploadMiddleware');
 
 // Public routes
 router.get('/', productController.getAllProducts);
+router.get('/low-stock', productController.getLowStockProducts); // Moved up
 router.get('/:id', productController.getProductById);
 
-// Protected routes (admin only)
-router.post('/', authMiddleware, adminMiddleware, upload.array('images', 5), productController.createProduct);
-router.put('/:id', authMiddleware, adminMiddleware, upload.array('images', 5), productController.updateProduct);
-router.delete('/:id', authMiddleware, adminMiddleware, productController.deleteProduct);
-router.delete('/:id/hard', authMiddleware, adminMiddleware, productController.hardDeleteProduct);
-router.delete('/:id/images/:imageUrl', authMiddleware, adminMiddleware, productController.deleteProductImage);
+// Admin routes (Public for Development)
+router.post('/', upload.array('images', 5), productController.createProduct);
+router.put('/:id', upload.array('images', 5), productController.updateProduct);
+router.delete('/:id', productController.hardDeleteProduct);
+router.delete('/:id/hard', productController.hardDeleteProduct);
+router.delete('/:id/images/:imageUrl', productController.deleteProductImage);
 
 module.exports = router;

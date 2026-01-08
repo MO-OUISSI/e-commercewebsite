@@ -30,7 +30,7 @@
 }
 
 .logo {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1.875rem;
     font-weight: 400;
     letter-spacing: -0.025em;
@@ -84,6 +84,43 @@
 .nav-label {
     font-size: 1.125rem;
     font-weight: 500;
+}
+
+.nav-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background-color: #ef4444;
+    /* red-500 */
+    color: white;
+    font-size: 0.625rem;
+    /* text-[10px] */
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 4px;
+    border: 2px solid #fff;
+    /* matches sidebar bg */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.nav-item:hover .notification-badge {
+    border-color: var(--zinc-50);
+}
+
+.nav-item.active .notification-badge {
+    border-color: var(--zinc-50);
 }
 
 .sidebar-bottom {

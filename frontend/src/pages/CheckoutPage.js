@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { Truck, ChevronLeft, CheckCircle, Package, MapPin, User, Phone, MessageSquare } from 'lucide-react';
 import orderService from '../api/orderService';
+import cartService from '../api/cartService';
 import '../styles/CheckoutPage.css';
 
 const CheckoutPage = () => {
@@ -96,8 +97,14 @@ const CheckoutPage = () => {
                 setOrderSuccess(true);
                 // If it was a cart checkout, we should probably clear the cart
                 if (isCartCheckout) {
-                    // Trigger cart refresh event
-                    window.dispatchEvent(new Event('cartUpdated'));
+                    try {
+                        const sessionId = localStorage.getItem('cartSessionId');
+                        await cartService.clearCart(sessionId);
+                        // Trigger cart refresh event
+                        window.dispatchEvent(new Event('cartUpdated'));
+                    } catch (cartErr) {
+                        console.error('Failed to clear cart:', cartErr);
+                    }
                 }
             }
         } catch (err) {

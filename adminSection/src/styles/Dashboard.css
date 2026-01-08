@@ -18,7 +18,8 @@
     .dashboard-info-bar {
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
+        gap: 12px;
+        /* Reduced gap */
     }
 }
 
@@ -108,6 +109,14 @@
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.04);
 }
 
+.stat-card-premium.clickable {
+    cursor: pointer;
+}
+
+.stat-card-premium.clickable:active {
+    transform: scale(0.98);
+}
+
 .stat-card-header {
     display: flex;
     justify-content: space-between;
@@ -163,6 +172,9 @@
     font-weight: 700;
     color: var(--zinc-900);
     margin-bottom: 2px;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
 }
 
 .stat-label-refined {
@@ -193,10 +205,135 @@
     padding: 32px;
 }
 
+.alerts-card-premium {
+    margin-top: 16px;
+    background: linear-gradient(135deg, #fff 0%, #fffefe 100%);
+    border-left: 4px solid #ef4444;
+}
+
+.alert-icon-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #fef2f2;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.alerts-count-badge {
+    background-color: #ef4444;
+    color: #fff;
+    padding: 2px 10px;
+    border-radius: 9999px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.alerts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.inventory-alert-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    background-color: #fafafa;
+    border-radius: 1rem;
+    border: 1px solid var(--zinc-50);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.inventory-alert-item:hover {
+    background-color: #fff;
+    border-color: #fecaca;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.05);
+    transform: translateX(4px);
+}
+
+.alert-product-mini {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #eee;
+    flex-shrink: 0;
+}
+
+.alert-product-mini img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.alert-details {
+    flex: 1;
+}
+
+.alert-msg {
+    font-size: 0.875rem;
+    color: var(--zinc-900);
+    margin-bottom: 2px;
+}
+
+.alert-stock-status {
+    font-size: 0.75rem;
+    color: var(--zinc-500);
+}
+
+.alert-action-btn {
+    padding: 6px 14px;
+    background-color: #fff;
+    border: 1px solid var(--zinc-200);
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--zinc-900);
+    transition: all 0.2s;
+}
+
+.inventory-alert-item:hover .alert-action-btn {
+    background-color: #ef4444;
+    color: #fff;
+    border-color: #ef4444;
+}
+
+.flex-items-center {
+    display: flex;
+    align-items: center;
+}
+
+.gap-12 {
+    gap: 12px;
+}
+
+.text-red-500 {
+    color: #ef4444;
+}
+
+.text-red-600 {
+    color: #dc2626;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
 @media (max-width: 768px) {
     .dashboard-card {
-        padding: 20px;
-        border-radius: 1.5rem;
+        padding: 16px;
+        /* Further reduced padding for mobile */
+        border-radius: 1rem;
+    }
+
+    .card-title-serif {
+        font-size: 1.1rem;
+        /* Slightly smaller title on mobile */
     }
 }
 
@@ -204,14 +341,110 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
+    /* Reduced bottom margin for tighter feel */
+    gap: 16px;
+    /* Explicit gap between title and action */
 }
 
 .card-title-serif {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 1.25rem;
     font-weight: 600;
     color: var(--zinc-900);
+}
+
+.custom-dropdown {
+    position: relative;
+}
+
+.period-select {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background-color: var(--zinc-50);
+    border: 1px solid var(--zinc-200);
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--zinc-700);
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.period-select:hover {
+    background-color: #fff;
+    border-color: var(--zinc-300);
+}
+
+.period-select .dropdown-icon {
+    transition: transform 0.2s;
+}
+
+.period-select .dropdown-icon.open {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: #fff;
+    border: 1px solid var(--zinc-200);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    min-width: 140px;
+    padding: 4px;
+    z-index: 100;
+    animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-item {
+    width: 100%;
+    text-align: left;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--zinc-700);
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+}
+
+.dropdown-item:last-child {
+    margin-bottom: 0;
+}
+
+.dropdown-item:hover {
+    background-color: var(--zinc-50);
+    color: var(--zinc-900);
+}
+
+.dropdown-item.active {
+    background-color: var(--zinc-900);
+    color: #fff;
+    font-weight: 600;
+}
+
+.dropdown-item.active:hover {
+    background-color: #000;
 }
 
 /* Mockup Chart */
@@ -221,12 +454,15 @@
     gap: 16px;
     position: relative;
     padding-bottom: 20px;
+    /* Match with skeleton */
 }
 
 .chart-y-axis {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    width: 44px;
+    /* Fixed width to match skeleton */
     font-size: 0.75rem;
     color: var(--zinc-400);
     padding-bottom: 32px;
@@ -262,7 +498,8 @@
 .chart-labels {
     display: flex;
     justify-content: space-between;
-    padding-left: 45px;
+    padding-left: 60px;
+    /* Aligned with chart-y-axis width (44) + gap (16) */
     margin-top: 10px;
     font-size: 0.75rem;
     color: var(--zinc-400);
@@ -301,6 +538,14 @@
     border-bottom: 1px solid var(--zinc-50);
 }
 
+.compact-table tr.unread {
+    background-color: var(--zinc-50);
+}
+
+.compact-table tr.unread:hover {
+    background-color: var(--zinc-100);
+}
+
 .id-cell-bold {
     font-weight: 600;
     color: var(--zinc-900);
@@ -318,19 +563,35 @@
     font-weight: 600;
 }
 
-.status-pill.processing {
+.status-pill.new {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.status-pill.confirmed {
+    background-color: #ecfdf5;
+    color: #059669;
+}
+
+.status-pill.shipped {
     background-color: #fffbeb;
     color: #d97706;
 }
 
-.status-pill.completed {
-    background-color: #f0fdf4;
-    color: #16a34a;
+.status-pill.delivered {
+    background-color: var(--zinc-900);
+    color: #fff;
 }
 
 .status-pill.cancelled {
     background-color: #fef2f2;
     color: #dc2626;
+}
+
+/* Fallback/Legacy */
+.status-pill.processing {
+    background-color: #f4f4f5;
+    color: #71717a;
 }
 
 .view-all-link {
@@ -340,6 +601,18 @@
     background: none;
     border: none;
     cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-all-link:hover {
+    color: var(--zinc-900);
+    text-decoration: none;
+    /* Removed underline preference for pill style or similar */
+    background-color: var(--zinc-100);
+    padding: 4px 12px;
+    border-radius: 6px;
+    margin: -4px -12px;
+    /* Compensate for padding to prevent layout shift */
 }
 
 /* Top Selling Section */
@@ -392,8 +665,24 @@
 .product-mini-img {
     width: 48px;
     height: 48px;
-    background-color: #ddd;
+    background-color: var(--zinc-100);
     border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 1px solid var(--zinc-100);
+}
+
+.product-mini-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-mini-img .fallback-icon {
+    color: var(--zinc-400);
 }
 
 .product-p-name {
@@ -411,6 +700,8 @@
     font-weight: 700;
     font-size: 0.875rem;
     color: var(--zinc-900);
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Footer */
@@ -450,4 +741,188 @@
 
 .footer-right a:hover {
     color: var(--zinc-900);
+}
+
+/* Skeleton Loader Styles */
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+.pulse {
+    animation: pulse 1.5s ease-in-out infinite;
+    background-color: var(--zinc-100);
+}
+
+.sales-overview-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 10px 0;
+}
+
+.skeleton-chart-main {
+    height: 200px;
+    display: flex;
+    gap: 16px;
+    position: relative;
+    padding-bottom: 20px;
+    /* Match with chart */
+}
+
+.skeleton-y-axis {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 44px;
+    /* Fixed width to match chart */
+    padding-bottom: 32px;
+}
+
+.skeleton-y-label {
+    height: 12px;
+    width: 30px;
+    border-radius: 4px;
+}
+
+.skeleton-wave-container {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding: 0 10px;
+    border-bottom: 1px solid var(--zinc-50);
+}
+
+.skeleton-wave-point {
+    width: 8px;
+    border-radius: 4px 4px 0 0;
+}
+
+.skeleton-x-axis {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 60px;
+    /* Match chart labels offset */
+    margin-top: 10px;
+}
+
+.skeleton-x-label {
+    height: 10px;
+    width: 24px;
+    border-radius: 3px;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 640px) {
+    .dashboard-card {
+        padding: 20px;
+        border-radius: 1.5rem;
+    }
+
+    .card-title-serif {
+        font-size: 1.25rem;
+    }
+
+    .card-header-clean {
+        margin-bottom: 16px;
+    }
+
+    /* Sales Overview Mobile */
+    .chart-container {
+        height: 180px;
+    }
+
+    .chart-y-axis {
+        font-size: 0.65rem;
+        width: 36px;
+        padding-bottom: 24px;
+    }
+
+    .chart-wave-container {
+        padding: 0 6px;
+    }
+
+    .chart-labels {
+        padding-left: 42px;
+        font-size: 0.6rem;
+        margin-top: 8px;
+    }
+
+    .period-selector-custom {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+
+    /* Recent Orders Mobile */
+    .compact-table th {
+        font-size: 0.65rem;
+        padding: 10px 12px;
+    }
+
+    .compact-table td {
+        padding: 12px;
+        font-size: 0.8125rem;
+    }
+
+    .id-cell-bold {
+        font-size: 0.8125rem;
+    }
+
+    .status-pill {
+        padding: 3px 8px;
+        font-size: 0.65rem;
+    }
+
+    .date-cell-light {
+        font-size: 0.75rem;
+    }
+
+    /* Skeleton Loader Mobile */
+    .skeleton-chart-main {
+        height: 180px;
+    }
+
+    .skeleton-y-axis {
+        width: 36px;
+        padding-bottom: 24px;
+    }
+
+    .skeleton-x-axis {
+        padding-left: 42px;
+        margin-top: 8px;
+    }
+
+    .skeleton-wave-point {
+        width: 6px;
+    }
+
+    /* Low Stock Badge Mobile */
+    .alerts-count-badge {
+        padding: 4px 8px;
+        font-size: 0.625rem;
+        white-space: nowrap;
+        min-width: fit-content;
+    }
+}
+
+.hidden-badge {
+    display: inline-block;
+    background-color: #fee2e2;
+    color: #ef4444;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    font-weight: 600;
+    vertical-align: middle;
 }

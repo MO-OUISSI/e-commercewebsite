@@ -27,7 +27,7 @@
 }
 
 .form-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 2.25rem;
     letter-spacing: -0.025em;
     color: #000;
@@ -121,7 +121,7 @@
 
 .field-row {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
     gap: 24px;
 }
 
@@ -174,7 +174,8 @@
 }
 
 .submit-btn:hover {
-    background-color: var(--zinc-800);
+    background-color: #27272a;
+    color: #fff;
 }
 
 .edit-image-container {
@@ -238,4 +239,202 @@
 .form-actions-btns {
     display: flex;
     gap: 12px;
+}
+
+/* Custom Dropdown Styles (Matches Dashboard.css) */
+.form-custom-dropdown {
+    position: relative;
+    width: 100%;
+}
+
+.form-select {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 8px;
+    padding: 12px;
+    background-color: var(--zinc-50);
+    border: none;
+    border-bottom: 1px solid var(--zinc-200);
+    border-radius: 0;
+    font-size: 1rem;
+    font-family: inherit;
+    color: var(--zinc-900);
+    cursor: pointer;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.form-select:hover {
+    background-color: #fff;
+    border-bottom-color: var(--zinc-300);
+}
+
+.form-select .dropdown-icon {
+    transition: transform 0.2s;
+}
+
+.form-select .dropdown-icon.open {
+    transform: rotate(180deg);
+}
+
+.form-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    left: 0;
+    background: #fff;
+    border: 1px solid var(--zinc-200);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    padding: 4px;
+    z-index: 100;
+    animation: dropdownFadeIn 0.2s ease-out;
+}
+
+@keyframes dropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-dropdown-item {
+    width: 100%;
+    text-align: left;
+    padding: 10px 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--zinc-700);
+    background: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+}
+
+.form-dropdown-item:last-child {
+    margin-bottom: 0;
+}
+
+.form-dropdown-item:hover {
+    background-color: var(--zinc-50);
+    color: var(--zinc-900);
+}
+
+.form-dropdown-item.active {
+    background-color: var(--zinc-900);
+    color: #fff;
+    font-weight: 600;
+}
+
+.form-dropdown-item.active:hover {
+    background-color: #000;
+}
+
+.delete-icon-btn {
+    color: #ef4444;
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    transition: color 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+.delete-icon-btn:hover {
+    color: #dc2626;
+    background-color: #fef2f2;
+    /* Optional: subtle bg on hover, user asked for none but usually hover needs feedback. If user INSISTS on none, I can remove. I will keep subtle for UX or remove if explicit "no background AT ALL". User said "no background" which usually implies the default state. */
+}
+
+@media (max-width: 640px) {
+    .collection-form-content {
+        gap: 20px;
+    }
+
+    .form-header {
+        margin-bottom: 24px;
+        flex-direction: row;
+        /* Keep row for back button */
+    }
+
+    .form-title {
+        font-size: 1.75rem;
+    }
+
+    .fields-section {
+        padding: 20px;
+        border-radius: 1.5rem;
+    }
+
+    .field-row {
+        grid-template-columns: 1fr;
+        /* Stack row fields */
+        gap: 16px;
+    }
+
+    .edit-image-container {
+        height: 200px;
+        /* Fixed height for mobile */
+    }
+
+    .form-actions-row {
+        flex-direction: column-reverse;
+        /* Stack buttons, delete at bottom */
+        gap: 16px;
+        align-items: stretch;
+    }
+
+    .form-actions-btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        width: 100%;
+    }
+
+    .cancel-btn,
+    .submit-btn {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+    }
+
+    .delete-icon-btn {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #fecaca;
+        background-color: #fff;
+        margin-top: 8px;
+    }
+
+    /* Wait, user wanted just an icon? "delete icon with no background". 
+       If I make it a full width button on mobile it might contradict "just an icon". 
+       Let's keep it as an icon row or simple button. 
+       Let's try a clean row layout for buttons on mobile. */
+
+    .form-actions-row {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .delete-icon-btn {
+        width: auto;
+        border: none;
+        background: none;
+        margin-top: 0;
+    }
 }

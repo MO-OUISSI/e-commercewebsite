@@ -1,42 +1,48 @@
-import React, { useState } from 'react';
-import { ArrowLeft, Zap, Sparkles, Tag as SaleIcon, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ArrowLeft, Zap, Sparkles, Tag as SaleIcon, Trash2, Loader2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 import '../styles/ProductDetails.css';
 
-const ProductDetails = ({ onTabChange }) => {
-    const [activeColor, setActiveColor] = useState(0);
+const API_BASE_URL = 'http://localhost:5000';
 
-    const product = {
-        name: 'Premium Wool Coat',
-        description: 'Elegant autumn coat made from premium wool blend. Features a double-breasted front, notched lapels, and side pockets. Perfect for the changing seasons.',
-        price: 299.00,
-        category: 'outerwear',
-        isOnSale: true,
-        salePrice: 249.00,
-        isActive: true,
-        isFeatured: true,
-        isNewProduct: true,
-        colors: [
-            {
-                name: 'Camel',
-                hexCode: '#D4BCA6',
-                imageUrl: 'https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                sizes: [
-                    { label: 'S', stock: 12 },
-                    { label: 'M', stock: 45 },
-                    { label: 'L', stock: 0 }
-                ]
-            },
-            {
-                name: 'Midnight Black',
-                hexCode: '#1a1a1a',
-                imageUrl: 'https://images.unsplash.com/photo-1539109132304-39155021899a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
-                sizes: [
-                    { label: 'M', stock: 22 },
-                    { label: 'L', stock: 15 }
-                ]
+const ProductDetails = ({ onTabChange, productId }) => {
+    const [activeColor, setActiveColor] = useState(0);
+    const [product, setProduct] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const response = await fetch(`${API_BASE_URL}/products/${productId}?includeHidden=true`);
+                const data = await response.json();
+                if (data.success) {
+                    setProduct(data.data.product);
+                } else {
+                    toast.error('Failed to load product details');
+                    onTabChange('products');
+                }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                toast.error('Error connecting to server');
+            } finally {
+                setIsLoading(false);
             }
-        ]
-    };
+        };
+
+        if (productId) {
+            fetchProduct();
+        }
+    }, [productId, onTabChange]);
+
+    if (isLoading) {
+        return (
+            <div className="product-details-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>
+                <Loader2 className="animate-spin" size={40} color="var(--zinc-400)" />
+            </div>
+        );
+    }
+
+    if (!product) return null;
 
     return (
         <div id="tab-product-details" className="product-details-content fade-in">
@@ -46,11 +52,17 @@ const ProductDetails = ({ onTabChange }) => {
                 </button>
                 <h2 className="details-title">Product Details</h2>
                 <div className="details-actions">
-                    <button onClick={() => alert('Delete triggered')} className="delete-btn-outline">
+                    <button 
+                        onClick={() => {
+                            // Already handled in Inventory, but good to have here too
+                            toast.error('Use the inventory list to delete for now');
+                        }} 
+                        className="delete-btn-outline"
+                    >
                         <Trash2 size={18} />
                         Delete Product
                     </button>
-                    <button onClick={() => onTabChange('edit-product')} className="edit-btn">Edit</button>
+                    <button onClick={() => onTabChange('edit-product', product._id)} className="edit-btn">Edit</button>
                 </div>
             </div>
 
@@ -58,7 +70,14 @@ const ProductDetails = ({ onTabChange }) => {
                 {/* Left: Images */}
                 <div className="visuals-section">
                     <div className="main-image-wrapper">
-                        <img src={product.colors[activeColor].imageUrl} alt={product.name} className="details-image" />
+                        <img 
+                            src={product.colors[activeColor]?.imageUrl?.startsWith('http') 
+                                ? product.colors[activeColor].imageUrl 
+                                : `${API_BASE_URL}${product.colors[activeColor].imageUrl}`
+                            } 
+                            alt={product.name} 
+                            className="details-image" 
+                        />
                         <div className="visual-badges">
                             {product.isFeatured && <div className="detail-badge feat"><Zap size={14} /> Featured</div>}
                             {product.isNewProduct && <div className="detail-badge new"><Sparkles size={14} /> New</div>}
@@ -101,12 +120,12 @@ const ProductDetails = ({ onTabChange }) => {
                                     <span className="color-dot" style={{ backgroundColor: color.hexCode }}></span>
                                 </button>
                             ))}
-                            <span className="current-color-name">{product.colors[activeColor].name}</span>
+                            <span className="current-color-name">{product.colors[activeColor]?.name}</span>
                         </div>
 
                         <h4 className="info-sub">Sizes & Availability</h4>
                         <div className="sizes-list-details">
-                            {product.colors[activeColor].sizes.map((size, idx) => (
+                            {product.colors[activeColor]?.sizes.map((size, idx) => (
                                 <div key={idx} className={`size-availability ${size.stock === 0 ? 'out' : ''}`}>
                                     <span className="size-label">{size.label}</span>
                                     <span className="size-stock">{size.stock > 0 ? `${size.stock} in stock` : 'Out of stock'}</span>

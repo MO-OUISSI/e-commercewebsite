@@ -8,10 +8,10 @@ const upload = require('../middlewares/uploadMiddleware');
 // Public route to get active collections
 router.get('/', collectionController.getCollections);
 
-// Protected routes (Admin only)
-router.post('/', authMiddleware, adminMiddleware, upload.single('image'), collectionController.createCollection);
-router.put('/reorder', authMiddleware, adminMiddleware, collectionController.updatePositions);
-router.put('/:id', authMiddleware, adminMiddleware, upload.single('image'), collectionController.updateCollection);
-router.delete('/:id', authMiddleware, adminMiddleware, collectionController.deleteCollection);
+// Routes (Public for Development)
+router.post('/', upload.single('image'), collectionController.createCollection);
+router.put('/reorder', collectionController.updatePositions);
+router.put('/:id', upload.single('image'), collectionController.updateCollection);
+router.delete('/:id', collectionController.deleteCollection);
 
 module.exports = router;

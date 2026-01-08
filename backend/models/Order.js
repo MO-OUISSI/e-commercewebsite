@@ -98,6 +98,14 @@ const orderSchema = new mongoose.Schema({
         enum: ['pending', 'paid', 'refunded'],
         default: 'pending'
     },
+    isRead: {
+        type: Boolean,
+        default: false
+    },
+    isSeen: {
+        type: Boolean,
+        default: false
+    },
     createdAt: {
         type: Date,
         default: Date.now

@@ -14,8 +14,28 @@
     margin-bottom: 16px;
 }
 
+.back-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 1px solid var(--zinc-100);
+    color: var(--zinc-600);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background-color: var(--zinc-50);
+    color: var(--zinc-900);
+    border-color: var(--zinc-300);
+}
+
 .form-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 2.25rem;
     color: #000;
 }
@@ -86,6 +106,22 @@
 .form-input:focus,
 .form-textarea:focus {
     border-bottom-color: #000;
+}
+
+select.form-input {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+    appearance: none;
+}
+
+select.form-input option {
+    background-color: #fff;
+    color: var(--zinc-900);
+    padding: 12px;
 }
 
 /* Variants Section */
@@ -218,6 +254,36 @@
     max-width: 100px;
 }
 
+.size-input-wrapper,
+.stock-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.threshold-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.input-mini-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--zinc-400);
+    letter-spacing: 0.05em;
+    margin-bottom: -4px;
+}
+
+.threshold-input {
+    max-width: 80px;
+    background-color: #fff !important;
+    border: 1px solid var(--zinc-100) !important;
+    border-radius: 8px;
+    text-align: center;
+}
+
 /* Checkboxes */
 .checkbox-grid {
     display: grid;
@@ -242,6 +308,73 @@
     font-weight: 500;
     color: var(--zinc-700);
     cursor: pointer;
+}
+
+/* Toggle Switch */
+.toggle-switch-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: var(--zinc-50);
+    border-radius: 12px;
+    border: 1px solid var(--zinc-100);
+}
+
+.toggle-label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--zinc-900);
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--zinc-300);
+    transition: 0.3s;
+    border-radius: 28px;
+}
+
+.toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-switch input:checked+.toggle-slider {
+    background-color: #16a34a;
+}
+
+.toggle-switch input:checked+.toggle-slider:before {
+    transform: translateX(24px);
+}
+
+.toggle-switch input:focus+.toggle-slider {
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.1);
 }
 
 /* Buttons */
@@ -274,4 +407,79 @@
     justify-content: flex-end;
     gap: 16px;
     padding: 32px 0;
+}
+
+@media (max-width: 640px) {
+    .product-form-content {
+        gap: 20px;
+    }
+
+    .form-header {
+        flex-direction: row;
+        /* Keep row for back button */
+        margin-bottom: 24px;
+        align-items: center;
+    }
+
+    .form-title {
+        font-size: 1.5rem;
+        /* Smaller title */
+    }
+
+    .form-card {
+        padding: 20px;
+        border-radius: 1.5rem;
+    }
+
+    .field-row {
+        grid-template-columns: 1fr;
+        /* Stack inputs */
+        gap: 16px;
+    }
+
+    .variant-header {
+        align-items: center;
+    }
+
+    .variant-image-upload {
+        max-width: 100%;
+        height: 200px;
+        /* Fixed height for mobile */
+    }
+
+    .size-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 12px;
+    }
+
+    .size-input,
+    .stock-input {
+        max-width: 100%;
+        /* Full width in grid */
+    }
+
+    .checkbox-grid {
+        grid-template-columns: 1fr 1fr;
+        /* 2 columns for checkboxes */
+    }
+
+    .form-actions-bottom {
+        padding: 16px 0;
+        justify-content: space-between;
+    }
+
+    .submit-btn,
+    .cancel-btn {
+        width: 48%;
+        /* Split width */
+        padding: 12px 8px;
+        font-size: 0.8125rem;
+        white-space: nowrap;
+    }
+}
+
+.status-hidden {
+    color: #ef4444 !important;
+    /* Red color for hidden status */
 }

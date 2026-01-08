@@ -174,3 +174,59 @@ exports.getCurrentUser = async (req, res, next) => {
         next(error);
     }
 };
+
+// Register new admin user
+exports.register = async (req, res, next) => {
+    try {
+        const { email, password, role } = req.body;
+
+        // Check if user already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                message: 'Email already registered'
+            });
+        }
+
+        // Create new user
+        const user = new User({
+            email,
+            password,
+            role: role || 'admin'
+        });
+
+        await user.save();
+
+        res.status(201).json({
+            success: true,
+            message: 'User registered successfully',
+            data: {
+                user: {
+                    id: user._id,
+                    email: user.email,
+                    role: user.role,
+                    createdAt: user.createdAt
+                }
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+// Get all users
+exports.getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.find().select('-password').sort('-createdAt');
+
+        res.status(200).json({
+            success: true,
+            data: {
+                users
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+};

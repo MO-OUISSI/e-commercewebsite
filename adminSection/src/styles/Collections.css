@@ -20,7 +20,7 @@
 }
 
 .collections-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Inter', sans-serif;
     font-size: 3rem;
     letter-spacing: -0.025em;
     color: #000;
@@ -41,7 +41,17 @@
 }
 
 .add-collection-btn:hover {
-    background-color: var(--zinc-800);
+    background-color: #27272a;
+    /* Hardcoded zinc-800 equivalent */
+    color: #fff;
+}
+
+@media (max-width: 640px) {
+    .add-collection-btn {
+        padding: 8px 16px;
+        font-size: 0.8125rem;
+        margin-left: auto;
+    }
 }
 
 .collections-table-container {
@@ -76,11 +86,6 @@
     padding: 16px;
 }
 
-.id-cell {
-    padding-left: 32px !important;
-    color: var(--zinc-400);
-    font-size: 0.75rem;
-}
 
 .col-info {
     display: flex;
@@ -150,5 +155,163 @@
 
 .action-btn.delete:hover {
     color: #dc2626;
-    background-color: #fef2f2;
+    background-color: transparent;
+    /* Explicitly no background as requested */
+}
+
+/* Drag and Drop Styles */
+.drag-handle {
+    color: var(--zinc-400);
+    cursor: grab;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+}
+
+.drag-handle:hover {
+    color: var(--zinc-900);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.draggable-row.dragging {
+    background-color: #fff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--zinc-200);
+    border-radius: 12px;
+    display: table;
+    /* Ensure it keeps table structure while dragging */
+}
+
+/* Mobile Card View for Collections Table */
+@media (max-width: 768px) {
+    .collections-table thead {
+        display: none;
+    }
+
+    .collections-table tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .collections-table tr {
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border: 1px solid var(--zinc-200);
+        border-radius: 16px;
+        padding: 16px;
+        position: relative;
+        /* For absolute positioning of ID */
+    }
+
+    .collections-table td {
+        display: block;
+        padding: 4px 0;
+        width: 100%;
+        border: none;
+    }
+
+
+    .drag-cell {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        width: 32px !important;
+        height: 32px !important;
+        padding: 0 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #fff;
+        border: 1px solid var(--zinc-200);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        z-index: 20;
+    }
+
+    .drag-handle {
+        width: 100%;
+        height: 100%;
+        color: var(--zinc-400);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Make Image & Name prominent */
+    .col-info {
+        margin-top: 24px;
+        /* Space for the top absolute elements */
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        margin-bottom: 8px;
+    }
+
+    .col-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 16px;
+        /* Slightly rounder for larger image */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        /* Better shadow for depth */
+    }
+
+    .col-name {
+        font-size: 1.125rem;
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* Labeling specific cells for context if needed */
+    .slug-cell::before {
+        content: "Slug: ";
+        font-size: 0.75rem;
+        color: var(--zinc-400);
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .pos-cell::before {
+        content: "Position: ";
+        font-size: 0.75rem;
+        color: var(--zinc-400);
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    /* Position the actions and status nicely */
+    .status-badge {
+        margin-top: 4px;
+        font-size: 0.75rem;
+    }
+
+    .actions-cell {
+        margin-top: 16px;
+        padding-top: 16px;
+        border-top: 1px solid var(--zinc-100);
+        justify-content: flex-end;
+        /* Or space-between if we want to spread actions */
+        padding-right: 0;
+        gap: 12px;
+    }
+
+    .action-btn {
+        background-color: var(--zinc-50);
+        padding: 10px;
+    }
+}
+.col-image-fallback {
+    width: 40px;
+    height: 40px;
+    background-color: var(--zinc-100);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }

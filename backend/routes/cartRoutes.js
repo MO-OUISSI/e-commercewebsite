@@ -16,5 +16,6 @@ const optionalAuth = (req, res, next) => {
 router.get('/', optionalAuth, cartController.getCart);
 router.post('/add', optionalAuth, cartController.addToCart);
 router.put('/update', optionalAuth, cartController.updateCartItem);
+router.delete('/', optionalAuth, cartController.clearCart);
 
 module.exports = router;
